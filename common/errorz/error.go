@@ -37,7 +37,7 @@ func Code(code int) error {
 	return &myError{
 		code:  code,
 		msg:   msg,
-		stack: calle(),
+		stack: caller(),
 	}
 }
 
@@ -45,7 +45,7 @@ func CodeMsg(code int, msg string) error {
 	return &myError{
 		code:  code,
 		msg:   msg,
-		stack: calle(),
+		stack: caller(),
 	}
 }
 
@@ -55,7 +55,7 @@ func CodeError(code int, err error) error {
 		code:  code,
 		msg:   msg,
 		err:   err,
-		stack: calle(),
+		stack: caller(),
 	}
 }
 
@@ -64,14 +64,14 @@ func CodeMsgError(code int, msg string, err error) error {
 		code:  code,
 		msg:   msg,
 		err:   err,
-		stack: calle(),
+		stack: caller(),
 	}
 }
 
 func Error(err error) error {
 	return &myError{
 		err:   err,
-		stack: calle(),
+		stack: caller(),
 	}
 }
 
@@ -98,7 +98,7 @@ type recorde struct {
 }
 
 // 记录错误链，方便定位错误
-func calle() []recorde {
+func caller() []recorde {
 	var list []recorde
 	var hasMap = make(map[string]bool)
 	for i := 2; ; i++ {

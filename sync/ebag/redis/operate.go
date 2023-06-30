@@ -20,7 +20,7 @@ if redis.call('get', KEYS[1]) == ARGV[1] then
 end`
 
 // 设置一个有过期时间的键值对
-func (m *redisObj) SetTTL(key string, value string, ttl int64) error {
+func (m *redisObj) SetTTL(key string, value interface{}, ttl int64) error {
 	conn := m.Pool.Get()
 	defer conn.Close()
 	if _, err := conn.Do("setex", key, ttl, value); err != nil {
@@ -30,7 +30,7 @@ func (m *redisObj) SetTTL(key string, value string, ttl int64) error {
 }
 
 // 设置一个键值对
-func (m *redisObj) Set(key string, value string) error {
+func (m *redisObj) Set(key string, value interface{}) error {
 	conn := m.Pool.Get()
 	defer conn.Close()
 	if _, err := conn.Do("set", key, value); err != nil {
@@ -67,5 +67,5 @@ func (m *redisObj) Exists(key string) (bool, error) {
 func (m *redisObj) GetKeys(patter string) ([]string, error) {
 	conn := m.Pool.Get()
 	defer conn.Close()
-	return redis.Strings(conn.Do("key", patter))
+	return redis.Strings(conn.Do("keys", patter))
 }

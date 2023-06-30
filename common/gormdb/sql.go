@@ -34,7 +34,7 @@ type UpdateSet[T any] struct {
 	FuncUpdateSet func(v T) []interface{}
 }
 
-// 批量更新(set方式)
+// 批量更新(set方式)(建议是使用id主键或者唯一索引的方式）
 func UpdateDifferentSet[T any](tableName string, list []T, updateList []UpdateSet[T]) (sql string, args []interface{}) {
 	var sb strings.Builder
 	args = make([]interface{}, 0)
@@ -57,7 +57,7 @@ func UpdateDifferentSet[T any](tableName string, list []T, updateList []UpdateSe
 	return
 }
 
-// 批量更新(必须包含主键字段，有则更新，无则插入，无主键则插入)
+// 批量更新(必须包含主键字段以及非空字段，有则更新，无则插入，无主键则插入)（不建议使用）
 func UpdateByKey[T any](tableName string, fields []string, values []T, f func(v T) []interface{}) (sql string, args []interface{}) {
 	repeat := "(" + strings.TrimSuffix(strings.Repeat("?,", len(fields)), ",") + "),"
 	repeats := strings.TrimSuffix(strings.Repeat(repeat, len(values)), ",")

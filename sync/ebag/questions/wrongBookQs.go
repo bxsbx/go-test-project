@@ -13,24 +13,41 @@ import (
 )
 
 type StudentWrongQuestions struct {
-	StudentID   string  // 学生id
-	QuestionID  string  // 题目id
-	CorrectNum  int     // 正确次数
-	ErrorNum    int     // 错误次数
-	ScoreRate   float64 // 得分/正确率
-	MasterLevel int     // 题目掌握程度
-	SchoolID    int     // 学校id
-	ClassID     string  // 班级id
-	SubjectID   int     // 学科id
-	From        int     // 来源,目前有作业系统/阅卷系统
-	WrongTag    int     // 错题标签(0.暂无标签,1.概念模糊,2.思路错误,3.审题错误,4.粗心大意,5.完全不会,6.其他原因)
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	IsCollect   int
-	IsWrong     int
+	StudentID   string    `gorm:"column:student_id;primaryKey" json:"student_id"`   // 学生id
+	QuestionID  string    `gorm:"column:question_id;primaryKey" json:"question_id"` // 题目id
+	CorrectNum  int       `gorm:"column:correct_num" json:"correct_num"`            // 正确次数
+	ErrorNum    int       `gorm:"column:error_num" json:"error_num"`                // 错误次数
+	ScoreRate   float64   `gorm:"column:score_rate" json:"score_rate"`              // 得分/正确率
+	MasterLevel int       `gorm:"column:master_level" json:"master_level"`          // 题目掌握程度
+	SchoolID    int       `gorm:"column:school_id" json:"school_id"`                // 学校id
+	ClassID     string    `gorm:"column:class_id" json:"class_id"`                  // 班级id
+	SubjectID   int       `gorm:"column:subject_id" json:"subject_id"`              // 学科id
+	From        int       `gorm:"column:from" json:"from"`                          // 来源,目前有作业系统/阅卷系统
+	WrongTag    int       `gorm:"column:wrong_tag" json:"wrong_tag"`                // 错题标签(0.暂无标签,1.概念模糊,2.思路错误,3.审题错误,4.粗心大意,5.完全不会,6.其他原因)
+	CreatedAt   time.Time `gorm:"column:created_at" json:"-"`
+	UpdatedAt   time.Time `gorm:"column:updated_at" json:"-"`
+	IsCollect   int       `gorm:"column:is_collect;default:-1" json:"is_collect"`
+	IsWrong     int       `gorm:"column:is_wrong;default:-1" json:"is_wrong,omitempty"`
 	//用于区分 错题1 和 学科网2 题目
 	//Origin int `gorm:"column:origin" json:"-"`
-	EbagTag int // 智慧课堂错题标签(1.课前,2.课中,3.课后)
+	EbagTag int `gorm:"column:zh_tag" json:"-"` // 智慧课堂错题标签(1.课前,2.课中,3.课后)
+}
+
+type RecordSql struct {
+	ExecSql string        `json:"exec_sql"`
+	Sql     string        `json:"sql"`
+	Args    []interface{} `json:"args"`
+}
+
+func genRecordSql(sql string, args []interface{}) string {
+	sqlRecord := fmt.Sprintf(strings.ReplaceAll(sql, "?", "%v"), args...)
+	record := RecordSql{
+		sqlRecord,
+		sql,
+		args,
+	}
+	marshal, _ := json.Marshal(record)
+	return string(marshal)
 }
 
 // 创建学生错题记录
@@ -48,19 +65,18 @@ func CreateWrongQs(questions StudentWrongQuestions, db *gorm.DB) (err error) {
 
 	err = db.Exec(sql, args...).Error
 	if err != nil {
-		sqlRecord := fmt.Sprintf(strings.ReplaceAll(sql, "?", "%v"), args...)
-		redis.RedisObj.Set(redis.SQL_INSERT+questions.StudentID+questions.QuestionID, sqlRecord)
+		redis.RedisObj.Set(redis.SQL_INSERT+questions.StudentID+questions.QuestionID, genRecordSql(sql, args))
 	}
 	return
 }
 
 // 更新学生错题记录
-func UpdateWrongQs(studentID, questionID string, createTime time.Time, db *gorm.DB) (err error) {
+func UpdateWrongQs(studentID, questionID string, error_num int, createTime time.Time, db *gorm.DB) (err error) {
 	sql := "update student_wrong_questions set error_num = error_num + ?, create_at = ?, updated_at = ? where student_id = ? and question_id = ?"
-	err = db.Exec(sql, 1, createTime, time.Now(), studentID, questionID).Error
+	args := []interface{}{error_num, createTime, time.Now(), studentID, questionID}
+	err = db.Exec(sql, args...).Error
 	if err != nil {
-		sqlRecord := fmt.Sprintf(strings.ReplaceAll(sql, "?", "%v"), 1, studentID, questionID)
-		redis.RedisObj.Set(redis.SQL_UPDATE+studentID+questionID, sqlRecord)
+		redis.RedisObj.Set(redis.SQL_UPDATE+studentID+questionID, genRecordSql(sql, args))
 	}
 	return
 }
@@ -84,6 +100,7 @@ func IsExistWrongQs(studentID, questionID string, db *gorm.DB) (exist bool, err 
 	return
 }
 
+// 取消事务执行，事务是顺序执行的，没办法充分利用连接数，一个事务只能用到了一个连接
 func BatchHandle(list []StuWrongQuestionItem) {
 	var wg sync.WaitGroup
 	for i := range list {
@@ -149,11 +166,12 @@ func BatchHandle(list []StuWrongQuestionItem) {
 					fmt.Println(err)
 				}
 			} else {
+				// 由于之后可能要同步后面时间的数据，得将创建时间提前
 				questionDate, _ := time.Parse("2006-01-02", list[j].F_date)
 				if oneQs.CreatedAt.Before(questionDate) {
 					questionDate = oneQs.CreatedAt
 				}
-				err := UpdateWrongQs(studentId, questionId, questionDate, mysql.MysqlDB)
+				err := UpdateWrongQs(studentId, questionId, 1, questionDate, mysql.MysqlDB)
 				if err != nil {
 					fmt.Println(err)
 				}
@@ -163,7 +181,7 @@ func BatchHandle(list []StuWrongQuestionItem) {
 	wg.Wait()
 }
 
-// 重新执行未成功的sql
+// 重新执行未成功的sql（由于多并发插入，可能造成重复主键插入不成功）
 func ExecSqlAgain(keys []string) {
 	var wg sync.WaitGroup
 	tx := mysql.MysqlDB.Begin()
@@ -180,4 +198,8 @@ func ExecSqlAgain(keys []string) {
 	}
 	wg.Wait()
 	tx.Commit()
+}
+
+func BatchHandle2() {
+
 }

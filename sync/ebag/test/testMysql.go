@@ -1,11 +1,5 @@
 package main
 
-import (
-	"StandardProject/sync/ebag/mysql"
-	"StandardProject/sync/ebag/questions"
-	"fmt"
-)
-
 func main() {
 	//creatTime, _ := time.Parse(time.DateTime, "2022-05-11 08:00:00")
 	//question := questions.StudentWrongQuestions{
@@ -27,8 +21,8 @@ func main() {
 	//	UpdatedAt:   time.Now(),
 	//}
 	//err := questions.CreateWrongQs(question, mysql.MysqlDB)
-	err := questions.UpdateWrongQs("0-2019-1-eb9b3075-54d0-493b-ae8d-0f6b39d52400", "253807668", mysql.MysqlDB)
-	if err != nil {
-		fmt.Println(err)
-	}
+	//err := questions.UpdateWrongQs("0-2019-1-eb9b3075-54d0-493b-ae8d-0f6b39d52400", "253807668", mysql.MysqlDB)
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
 }

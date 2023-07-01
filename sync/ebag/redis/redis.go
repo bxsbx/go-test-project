@@ -9,7 +9,7 @@ import (
 )
 
 type redisObj struct {
-	Pool *redis.Pool
+	pool *redis.Pool
 }
 
 type redisConfig struct {
@@ -59,7 +59,7 @@ func defaultRedisConfig(cfg beegoConfig.Configer) redisConfig {
 
 func newRedis(cfg redisConfig) *redisObj {
 	return &redisObj{
-		Pool: &redis.Pool{
+		pool: &redis.Pool{
 			MaxIdle:     cfg.MaxIdle,
 			MaxActive:   cfg.MaxActive,
 			IdleTimeout: time.Duration(cfg.IdleTimeout) * time.Second,

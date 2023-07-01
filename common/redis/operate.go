@@ -1,7 +1,6 @@
 package redis
 
 import (
-	"encoding/json"
 	"github.com/gomodule/redigo/redis"
 )
 
@@ -21,28 +20,26 @@ if redis.call('get', KEYS[1]) == ARGV[1] then
 end`
 
 // 设置一个有过期时间的键值对
-func (m *redisObj) SetTTL(key string, value interface{}, ttl int64) error {
+func (m *redisObj) SetTTL(key string, value string, ttl int64) error {
 	conn := m.pool.Get()
 	defer conn.Close()
 	if err := conn.Err(); err != nil {
 		return err
 	}
-	marshal, _ := json.Marshal(value)
-	if _, err := conn.Do("setex", key, ttl, string(marshal)); err != nil {
+	if _, err := conn.Do("setex", key, ttl, value); err != nil {
 		return err
 	}
 	return nil
 }
 
 // 设置一个键值对
-func (m *redisObj) Set(key string, value interface{}) error {
+func (m *redisObj) Set(key string, value string) error {
 	conn := m.pool.Get()
 	defer conn.Close()
 	if err := conn.Err(); err != nil {
 		return err
 	}
-	marshal, _ := json.Marshal(value)
-	if _, err := conn.Do("set", key, string(marshal)); err != nil {
+	if _, err := conn.Do("set", key, value); err != nil {
 		return err
 	}
 	return nil

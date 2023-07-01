@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	redis.RedisObj.Set("kok::dd", questions.RecordSql{Sql: "sc", Args: []interface{}{"csac", 323, "csc"}})
+	//redis.RedisObj.Set("kok::dd", questions.RecordSql{Sql: "sc", Args: []interface{}{"csac", 323, "csc", questions.RecordSql{ExecSql: "vsavasv", Args: []interface{}{"svsvasv", 23}}}})
 	str, err := redis.RedisObj.GetString("kok::dd")
 	if err != nil {
 		//log.Fatal(err)

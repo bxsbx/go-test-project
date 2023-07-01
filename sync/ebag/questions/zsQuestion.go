@@ -116,11 +116,12 @@ func GetZsQuestions(questionIds []string, coroutineNum int) {
 			questions, err := ZsQuestionHttp(qIds)
 			x := <-coroutineChan
 			if err != nil {
-				redis.RedisObj.Set(redis.FAIL_ZS_QUESTIONS+strconv.Itoa(x), qIds)
+				redis.RedisObj.Set(redis.FAIL_ZS_QUESTIONS+strconv.Itoa(x), strings.Join(qIds, ","))
 				fmt.Println("ZsQuestionHttp——err:", err)
 			} else {
 				for _, qs := range questions {
-					redis.RedisObj.Set(redis.ZS_QUESTIONS+strconv.Itoa(qs.ID), qs)
+					jsonData, _ := json.Marshal(qs)
+					redis.RedisObj.Set(redis.ZS_QUESTIONS+strconv.Itoa(qs.ID), string(jsonData))
 				}
 			}
 		}(list)
@@ -146,7 +147,8 @@ func GetZsQsAgain(coroutineNum int) {
 				fmt.Println("ZsQuestionHttp——err:", err)
 			} else {
 				for _, qs := range questions {
-					redis.RedisObj.Set(redis.ZS_QUESTIONS+strconv.Itoa(qs.ID), qs)
+					jsonData, _ := json.Marshal(qs)
+					redis.RedisObj.Set(redis.ZS_QUESTIONS+strconv.Itoa(qs.ID), string(jsonData))
 				}
 				redis.RedisObj.Remove(k)
 			}

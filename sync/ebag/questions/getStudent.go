@@ -82,7 +82,8 @@ func SaveStudentToRedis(studentIds []string, coroutineNum int) {
 			if err != nil {
 				fmt.Println("GetStudentClassAndSchoolHttp——err:", err)
 			} else {
-				redis.RedisObj.Set(redis.STUDENT_SCHOOL+stuId, student)
+				jsonData, _ := json.Marshal(student)
+				redis.RedisObj.Set(redis.STUDENT_SCHOOL+stuId, string(jsonData))
 			}
 		}(studentIds[i])
 	}

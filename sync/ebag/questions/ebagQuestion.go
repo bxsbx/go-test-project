@@ -110,11 +110,12 @@ func GetEbagQuestions(questionIds []string, coroutineNum int) {
 			questions, err := EbagQuestionHttp(qIds)
 			x := <-coroutineChan
 			if err != nil {
-				redis.RedisObj.Set(redis.FAIL_EBAG_QUESTIONS+strconv.Itoa(x), qIds)
+				redis.RedisObj.Set(redis.FAIL_EBAG_QUESTIONS+strconv.Itoa(x), strings.Join(qIds, ","))
 				fmt.Println("EbagQuestionHttp——err:", err)
 			} else {
 				for _, qs := range questions {
-					redis.RedisObj.Set(redis.EBAG_QUESTIONS+strconv.Itoa(qs.ID), qs)
+					jsonData, _ := json.Marshal(qs)
+					redis.RedisObj.Set(redis.EBAG_QUESTIONS+strconv.Itoa(qs.ID), string(jsonData))
 				}
 			}
 		}(list)
@@ -140,7 +141,8 @@ func GetEbagQsAgain(coroutineNum int) {
 				fmt.Println("EbagQuestionHttp——err:", err)
 			} else {
 				for _, qs := range questions {
-					redis.RedisObj.Set(redis.EBAG_QUESTIONS+strconv.Itoa(qs.ID), qs)
+					jsonData, _ := json.Marshal(qs)
+					redis.RedisObj.Set(redis.EBAG_QUESTIONS+strconv.Itoa(qs.ID), string(jsonData))
 				}
 				redis.RedisObj.Remove(k)
 			}

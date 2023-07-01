@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"encoding/json"
 	"github.com/gomodule/redigo/redis"
 )
 
@@ -26,7 +27,8 @@ func (m *redisObj) SetTTL(key string, value interface{}, ttl int64) error {
 	if err := conn.Err(); err != nil {
 		return err
 	}
-	if _, err := conn.Do("setex", key, ttl, value); err != nil {
+	marshal, _ := json.Marshal(value)
+	if _, err := conn.Do("setex", key, ttl, string(marshal)); err != nil {
 		return err
 	}
 	return nil
@@ -39,7 +41,8 @@ func (m *redisObj) Set(key string, value interface{}) error {
 	if err := conn.Err(); err != nil {
 		return err
 	}
-	if _, err := conn.Do("set", key, value); err != nil {
+	marshal, _ := json.Marshal(value)
+	if _, err := conn.Do("set", key, string(marshal)); err != nil {
 		return err
 	}
 	return nil

@@ -2,13 +2,15 @@ package main
 
 import (
 	_ "StandardProject/sync/ebag/global"
+	"StandardProject/sync/ebag/questions"
 	"StandardProject/sync/ebag/redis"
+	"encoding/json"
 	"fmt"
 )
 
 func main() {
-	redis.RedisObj.Set("kok::dd", "csasc")
-	str, err := redis.RedisObj.GetString("kok::fr")
+	redis.RedisObj.Set("kok::dd", questions.RecordSql{Sql: "sc", Args: []interface{}{"csac", 323, "csc"}})
+	str, err := redis.RedisObj.GetString("kok::dd")
 	if err != nil {
 		//log.Fatal(err)
 	}
@@ -26,6 +28,8 @@ func main() {
 	//}
 	//fmt.Println(keys)
 	//fmt.Println(exists)
+	var ques questions.RecordSql
+	json.Unmarshal([]byte(str), &ques)
 	fmt.Println(str)
 	fmt.Println("vssv")
 }

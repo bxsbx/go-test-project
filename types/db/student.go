@@ -10,5 +10,5 @@ type Student struct {
 }
 
 func (Student) TableName() string {
-	return global.StudentTable
+	return global.STUDENT_TABLE
 }

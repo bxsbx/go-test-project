@@ -3,7 +3,7 @@ package controllers
 import (
 	"StandardProject/global"
 	"StandardProject/services"
-	reqType "StandardProject/types/request"
+	"StandardProject/types/request"
 )
 
 type TestController struct {
@@ -11,7 +11,7 @@ type TestController struct {
 }
 
 func (c *TestController) Test1() {
-	var params reqType.Test1Params
+	var params request.Test1Params
 	err := c.FormValidate(&params)
 	if err != nil {
 		c.OutputError(err)

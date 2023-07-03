@@ -10,5 +10,5 @@ const (
 
 // 数据库表名
 const (
-	StudentTable = "student"
+	STUDENT_TABLE = "student"
 )

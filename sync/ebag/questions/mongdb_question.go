@@ -1,7 +1,7 @@
 package questions
 
 import (
-	mongodb "StandardProject/sync/ebag/mongdb"
+	"StandardProject/sync/ebag/mongodb"
 	"StandardProject/sync/ebag/redis"
 	"context"
 	"fmt"

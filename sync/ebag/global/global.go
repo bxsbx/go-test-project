@@ -1,7 +1,7 @@
 package global
 
 import (
-	mongodb "StandardProject/sync/ebag/mongdb"
+	mongodb "StandardProject/sync/ebag/mongodb"
 	"StandardProject/sync/ebag/mysql"
 	"StandardProject/sync/ebag/redis"
 	"github.com/astaxie/beego/config"

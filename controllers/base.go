@@ -5,7 +5,7 @@ import (
 	"StandardProject/common/logz"
 	"StandardProject/common/tracer"
 	"StandardProject/global"
-	"StandardProject/types"
+	"StandardProject/types/response"
 	"context"
 	"encoding/json"
 	"github.com/astaxie/beego"
@@ -28,7 +28,7 @@ func (b *BaseController) Finish() {
 	tracer.FinishSpan(b.AppCtx)
 }
 
-func (b *BaseController) backData(data types.Response) {
+func (b *BaseController) backData(data response.Response) {
 	b.Ctx.ResponseWriter.Header().Set("Content-Type", "application/json; charset=utf-8")
 	b.Ctx.ResponseWriter.Header().Set("Access-Control-Allow-Origin", "*")
 	b.Data["json"] = data
@@ -40,18 +40,18 @@ func (b *BaseController) OutputError(err error) {
 	errStack := errorz.GetErrorCallerList(err)
 	logz.RequestError(errStack, b.Ctx)
 	code, msg := errorz.GlobalError(err)
-	b.backData(types.Response{Code: code, Msg: msg, ErrStack: errStack})
+	b.backData(response.Response{Code: code, Msg: msg, ErrStack: errStack})
 }
 
 func (b *BaseController) OutputSuccess(data interface{}) {
 	logz.RequestSucceed(b.Ctx)
-	b.backData(types.Response{Code: global.OK, Msg: global.OK_MSG, Data: data})
+	b.backData(response.Response{Code: global.OK, Msg: global.OK_MSG, Data: data})
 }
 
 func (b *BaseController) Output(code int, msg string, data interface{}, err error) {
 	errStack := errorz.GetErrorCallerList(err)
 	logz.Request(errStack, b.Ctx)
-	response := types.Response{Code: code, Msg: msg}
+	response := response.Response{Code: code, Msg: msg}
 	if data != nil {
 		response.Data = data
 	}

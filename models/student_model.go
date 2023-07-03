@@ -2,7 +2,7 @@ package models
 
 import (
 	"StandardProject/common/gormdb"
-	"StandardProject/types/dbType"
+	"StandardProject/types/db"
 	"context"
 	"github.com/jinzhu/gorm"
 )
@@ -26,7 +26,7 @@ func NewStudentModelWithDB(db *gorm.DB, appCtx context.Context) *studentModel {
 	}
 }
 
-func (t *studentModel) FindAll() (stu []dbType.Student, err error) {
+func (t *studentModel) FindAll() (stu []db.Student, err error) {
 	err = t.db.Find(&stu).Error
 	return
 }

@@ -2,7 +2,7 @@ package services
 
 import (
 	"StandardProject/models"
-	"StandardProject/types/dbType"
+	"StandardProject/types/db"
 	"context"
 )
 
@@ -19,7 +19,7 @@ func (c *testService) Test1() (string, error) {
 	//return "vsasv", errorz.Code(errorz.IO_READ_ERR)
 }
 
-func (c *testService) Test2() ([]dbType.Student, error) {
+func (c *testService) Test2() ([]db.Student, error) {
 	studentModel := models.NewStudentModel(c.appCtx)
 	return studentModel.FindAll()
 }

@@ -1,14 +1,13 @@
 package controllers
 
 import (
-	"StandardProject/controllers"
 	"StandardProject/global"
-	services "StandardProject/services/student"
-	reqType "StandardProject/types/reqType/student"
+	"StandardProject/services"
+	reqType "StandardProject/types/request"
 )
 
 type TestController struct {
-	controllers.BaseController
+	BaseController
 }
 
 func (c *TestController) Test1() {

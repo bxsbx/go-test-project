@@ -1,4 +1,4 @@
-package dbType
+package db
 
 import "StandardProject/global"
 

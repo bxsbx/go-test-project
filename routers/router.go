@@ -4,7 +4,7 @@ import (
 	"StandardProject/common/errorz"
 	"StandardProject/routers/auth"
 	"StandardProject/routers/children"
-	"StandardProject/types"
+	"StandardProject/types/response"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/plugins/cors"
@@ -31,7 +31,7 @@ func init() {
 			if errData != nil {
 				err := errData.(error)
 				code, msg := errorz.GlobalError(err)
-				resp := types.Response{Code: code, Msg: msg}
+				resp := response.Response{Code: code, Msg: msg}
 				ctx.Output.JSON(resp, false, false)
 			}
 		}

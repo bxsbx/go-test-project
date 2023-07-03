@@ -64,9 +64,9 @@ func CreateWrongQs(questions StudentWrongQuestions, db *gorm.DB) (err error) {
 		questions.From, questions.WrongTag, questions.CreatedAt, questions.UpdatedAt, questions.IsCollect, questions.IsWrong, questions.EbagTag}
 
 	err = db.Exec(sql, args...).Error
-	if err != nil {
-		redis.RedisObj.Set(redis.SQL_INSERT+questions.StudentID+questions.QuestionID, genRecordSql(sql, args))
-	}
+	//if err != nil {
+	//	redis.RedisObj.Set(redis.SQL_INSERT+questions.StudentID+questions.QuestionID, genRecordSql(sql, args))
+	//}
 	return
 }
 
@@ -75,9 +75,9 @@ func UpdateWrongQs(studentID, questionID string, error_num int, createTime time.
 	sql := "update student_wrong_questions set error_num = error_num + ?, create_at = ?, updated_at = ? where student_id = ? and question_id = ?"
 	args := []interface{}{error_num, createTime, time.Now(), studentID, questionID}
 	err = db.Exec(sql, args...).Error
-	if err != nil {
-		redis.RedisObj.Set(redis.SQL_UPDATE+studentID+questionID, genRecordSql(sql, args))
-	}
+	//if err != nil {
+	//	redis.RedisObj.Set(redis.SQL_UPDATE+studentID+questionID, genRecordSql(sql, args))
+	//}
 	return
 }
 
@@ -100,104 +100,144 @@ func IsExistWrongQs(studentID, questionID string, db *gorm.DB) (exist bool, err 
 	return
 }
 
-// 取消事务执行，事务是顺序执行的，没办法充分利用连接数，一个事务只能用到了一个连接
-func BatchHandle(list []StuWrongQuestionItem) {
+func Handle(item StuWrongQuestionItem) (err error) {
+	tx := mysql.MysqlDB.Begin()
+	studentId := item.F_student_id
+	questionId := strconv.Itoa(item.F_resource_id)
+	oneQs, err := FindOneWrongQs(studentId, questionId, tx)
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	if oneQs.StudentID != "" {
+		question := StudentWrongQuestions{
+			StudentID:   studentId,
+			QuestionID:  questionId,
+			CorrectNum:  0,
+			ErrorNum:    1,
+			ScoreRate:   0,
+			MasterLevel: 0,
+			SchoolID:    item.F_school_id,
+			ClassID:     item.F_class_id,
+			SubjectID:   item.F_subject_id,
+			From:        4,
+			WrongTag:    0,
+			EbagTag:     item.F_moment + 1,
+			IsCollect:   -1,
+			IsWrong:     -1,
+			UpdatedAt:   time.Now(),
+		}
+		if question.SchoolID == 0 {
+			jsonData, _ := redis.RedisObj.GetString(redis.STUDENT_SCHOOL + question.StudentID)
+			if jsonData != "" {
+				var student Student
+				json.Unmarshal([]byte(jsonData), &student)
+				if student.SchoolId <= 0 {
+					return
+				}
+				question.SchoolID = student.SchoolId
+			}
+		}
+		if len(questionId) < 16 {
+			jsonData, _ := redis.RedisObj.GetString(redis.ZS_QUESTIONS + questionId)
+			if jsonData != "" {
+				var zsQs ZSQuestion
+				json.Unmarshal([]byte(jsonData), &zsQs)
+				if zsQs.Subject > 0 {
+					question.SubjectID = zsQs.Subject
+				}
+			}
+		} else {
+			jsonData, _ := redis.RedisObj.GetString(redis.EBAG_QUESTIONS + questionId)
+			if jsonData != "" {
+				var ebagQs EbagQuestion
+				json.Unmarshal([]byte(jsonData), &ebagQs)
+				if ebagQs.Subject > 0 {
+					question.SubjectID = ebagQs.Subject
+				}
+			}
+		}
+
+		questionDate, _ := time.Parse("2006-01-02", item.F_date)
+		question.CreatedAt = questionDate
+		err := CreateWrongQs(question, tx)
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+	} else {
+		// 由于之后可能要同步后面时间的数据，得将创建时间提前
+		questionDate, _ := time.Parse("2006-01-02", item.F_date)
+		if oneQs.CreatedAt.Before(questionDate) {
+			questionDate = oneQs.CreatedAt
+		}
+		err := UpdateWrongQs(studentId, questionId, 1, questionDate, tx)
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+	}
+	tx.Commit()
+	return
+}
+
+/*
+1、取消事务执行，事务是顺序执行的，没办法充分利用连接数，一个事务只用到了一个连接
+2、开启事务的方式，防止多并发导致插入不成功
+*/
+func BatchHandle(list []StuWrongQuestionItem, moment int) {
 	var wg sync.WaitGroup
 	for i := range list {
 		wg.Add(1)
 		go func(j int) {
 			defer wg.Done()
-			studentId := list[j].F_student_id
-			questionId := strconv.Itoa(list[j].F_resource_id)
-			oneQs, _ := FindOneWrongQs(studentId, questionId, mysql.MysqlDB)
-			if oneQs.StudentID != "" {
-				question := StudentWrongQuestions{
-					StudentID:   studentId,
-					QuestionID:  questionId,
-					CorrectNum:  0,
-					ErrorNum:    1,
-					ScoreRate:   0,
-					MasterLevel: 0,
-					SchoolID:    list[j].F_school_id,
-					ClassID:     list[j].F_class_id,
-					SubjectID:   list[j].F_subject_id,
-					From:        4,
-					WrongTag:    0,
-					EbagTag:     list[j].F_moment + 1,
-					IsCollect:   -1,
-					IsWrong:     -1,
-					UpdatedAt:   time.Now(),
-				}
-				if question.SchoolID == 0 {
-					jsonData, _ := redis.RedisObj.GetString(redis.STUDENT_SCHOOL + question.StudentID)
-					if jsonData != "" {
-						var student Student
-						json.Unmarshal([]byte(jsonData), &student)
-						if student.SchoolId <= 0 {
-							return
-						}
-						question.SchoolID = student.SchoolId
-					}
-				}
-				if len(questionId) < 16 {
-					jsonData, _ := redis.RedisObj.GetString(redis.ZS_QUESTIONS + questionId)
-					if jsonData != "" {
-						var zsQs ZSQuestion
-						json.Unmarshal([]byte(jsonData), &zsQs)
-						if zsQs.Subject > 0 {
-							question.SubjectID = zsQs.Subject
-						}
-					}
-				} else {
-					jsonData, _ := redis.RedisObj.GetString(redis.EBAG_QUESTIONS + questionId)
-					if jsonData != "" {
-						var ebagQs EbagQuestion
-						json.Unmarshal([]byte(jsonData), &ebagQs)
-						if ebagQs.Subject > 0 {
-							question.SubjectID = ebagQs.Subject
-						}
-					}
-				}
-
-				questionDate, _ := time.Parse("2006-01-02", list[j].F_date)
-				question.CreatedAt = questionDate
-				err := CreateWrongQs(question, mysql.MysqlDB)
-				if err != nil {
-					fmt.Println(err)
-				}
-			} else {
-				// 由于之后可能要同步后面时间的数据，得将创建时间提前
-				questionDate, _ := time.Parse("2006-01-02", list[j].F_date)
-				if oneQs.CreatedAt.Before(questionDate) {
-					questionDate = oneQs.CreatedAt
-				}
-				err := UpdateWrongQs(studentId, questionId, 1, questionDate, mysql.MysqlDB)
-				if err != nil {
-					fmt.Println(err)
-				}
+			err := Handle(list[j])
+			if err != nil {
+				fmt.Println(err)
+				marshal, _ := json.Marshal(list[j])
+				redis.RedisObj.Set(redis.FAIL_MONGO_QS+strconv.Itoa(moment)+"::"+list[j].F_id, string(marshal))
 			}
 		}(i)
 	}
 	wg.Wait()
 }
 
-// 重新执行未成功的sql（由于多并发插入，可能造成重复主键插入不成功）
-func ExecSqlAgain(keys []string) {
+//// 重新执行未成功的sql
+//func ExecSqlAgain(keys []string) {
+//	var wg sync.WaitGroup
+//	tx := mysql.MysqlDB.Begin()
+//	for _, key := range keys {
+//		wg.Add(1)
+//		go func(k string) {
+//			wg.Done()
+//			sql, _ := redis.RedisObj.GetString(k)
+//			err := tx.Exec(sql).Error
+//			if err == nil {
+//				redis.RedisObj.Remove(k)
+//			}
+//		}(key)
+//	}
+//	wg.Wait()
+//	tx.Commit()
+//}
+
+// 重新执行未成功保存记录
+func ExecTxAgain(moment int) {
 	var wg sync.WaitGroup
-	tx := mysql.MysqlDB.Begin()
+	keys, _ := redis.RedisObj.GetKeys(redis.FAIL_MONGO_QS + strconv.Itoa(moment) + "::*")
 	for _, key := range keys {
 		wg.Add(1)
 		go func(k string) {
 			wg.Done()
-			sql, _ := redis.RedisObj.GetString(k)
-			err := tx.Exec(sql).Error
-			if err == nil {
+			str, _ := redis.RedisObj.GetString(k)
+			var item StuWrongQuestionItem
+			json.Unmarshal([]byte(str), &item)
+			if err := Handle(item); err == nil {
 				redis.RedisObj.Remove(k)
 			}
 		}(key)
 	}
 	wg.Wait()
-	tx.Commit()
 }
 
 func BatchHandle2() {

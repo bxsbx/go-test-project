@@ -16,7 +16,7 @@ const (
 )
 
 type StuWrongQuestionItem struct {
-	F_id                  string `json:"_id"          bson:"_id"`                    //id
+	F_id                  string `json:"_id"                   bson:"_id"`           //id
 	F_student_id          string `json:"F_student_id"          bson:"F_student_id"`  //学生id
 	F_resource_id         int    `json:"F_resource_id"         bson:"F_resource_id"` //资源id
 	F_subject_id          int    `json:"F_subject_id"          bson:"F_subject_id"`  //科目id

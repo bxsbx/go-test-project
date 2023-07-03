@@ -37,7 +37,9 @@ const (
 	STUDENT_SCHOOL = "sync::stu::school::"
 
 	//记录执行成功的页数
-	RECORD_SUCCESS_PAGE = "sync::success::page"
+	RECORD_SUCCESS_PAGE = "sync::success::page::"
+
+	FAIL_MONGO_QS = "sync::fail::mongo::qs::"
 )
 
 func defaultRedisConfig(cfg beegoConfig.Configer) redisConfig {

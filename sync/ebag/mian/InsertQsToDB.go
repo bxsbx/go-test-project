@@ -23,7 +23,7 @@ func main() {
 		if len(list) <= 0 {
 			break
 		}
-		questions.BatchHandle(list)
+		questions.BatchHandle(list, MOMENT)
 		redis.RedisObj.Set(redis.RECORD_SUCCESS_PAGE+key, "ok")
 	}
 }

@@ -36,7 +36,7 @@ type logData struct {
 	Time    time.Time   `json:"time"`
 	Level   string      `json:"level,default=info,options=[debug,info,error,warn]"`
 	Data    interface{} `json:"content,omitempty"`
-	Request requestData `json:"request,omitempty"`
+	Request requestData `json:"http,omitempty"`
 }
 
 type logConfig struct {

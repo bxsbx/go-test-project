@@ -87,3 +87,20 @@ func (m *redisObj) GetKeys(patter string) ([]string, error) {
 	}
 	return redis.Strings(conn.Do("key", patter))
 }
+
+// 删除匹配的所有键
+func (m *redisObj) DelKeys(patter string) error {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return err
+	}
+	keys, err := redis.Strings(conn.Do("key", patter))
+	if err != nil {
+		return err
+	}
+	for _, key := range keys {
+		conn.Do("del", key)
+	}
+	return nil
+}

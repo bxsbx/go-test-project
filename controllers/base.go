@@ -17,7 +17,7 @@ type BaseController struct {
 	beego.Controller
 }
 
-// Prepare runs after Init before request function execution.
+// Prepare runs after Init before http function execution.
 func (b *BaseController) Prepare() {
 	b.AppCtx = context.Background()
 	tracer.StarTracerSpan(b.AppCtx, b.Ctx.Request)

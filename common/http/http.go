@@ -1,4 +1,4 @@
-package request
+package http
 
 import (
 	"StandardProject/common/errorz"
@@ -138,7 +138,7 @@ func request(path string, method string, header map[string]string, query map[str
 	if err != nil {
 		return err
 	}
-	defer recordeLog(path, method, header, query, body, err)
+	recordeLog(path, method, header, query, body, err)
 	return nil
 }
 

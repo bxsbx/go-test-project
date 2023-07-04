@@ -1,7 +1,7 @@
 package client
 
 import (
-	"StandardProject/common/request"
+	"StandardProject/common/http"
 	"context"
 )
 
@@ -13,6 +13,6 @@ func AuthToken(accessToken string, thisType, userType, userId string) error {
 	queryMap["userType"] = userType
 	queryMap["userId"] = userId
 
-	err := request.PostQuery(path, queryMap, nil, request.RESPONSE2, request.GetClient(request.LOGIN), context.Background())
+	err := http.PostQuery(path, queryMap, nil, http.RESPONSE2, http.GetClient(http.LOGIN), context.Background())
 	return err
 }

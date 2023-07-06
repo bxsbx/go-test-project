@@ -1,6 +1,9 @@
 package util
 
-import "time"
+import (
+	"strconv"
+	"time"
+)
 
 const (
 	YMD_HMS = "2006-01-02 15:04:05"
@@ -26,4 +29,11 @@ func NowDate() time.Time {
 
 func NowDateStr() string {
 	return time.Now().In(timeLocal).Format(YMD)
+}
+
+func GetYmdByTime(time time.Time) (year, month, day int) {
+	year = time.Year()
+	month, _ = strconv.Atoi(time.Month().String())
+	day = time.Day()
+	return
 }

@@ -33,6 +33,13 @@ const (
 	POST   = "POST"
 	PUT    = "PUT"
 	DELETE = "DELETE"
+
+	//请求头
+	ACCEPT       = "Accept"
+	CONTENT_TYPE = "Content-Type"
+
+	BODY_FORM = "application/x-www-form-urlencoded"
+	BODY_JSON = "application/json"
 )
 
 func selectStructToResponse(bytes []byte, respType int, resultData interface{}) error {
@@ -103,7 +110,24 @@ func request(path string, method string, header map[string]string, query map[str
 		if err != nil {
 			return errorz.CodeError(errorz.ERR_MARSHAL, err)
 		}
-		reqBody = strings.NewReader(string(marshal))
+		if header != nil {
+			if val, ok := header[CONTENT_TYPE]; ok {
+				switch val {
+				case BODY_FORM:
+					var formData map[string]string
+					json.Unmarshal(marshal, &formData)
+					bodyForm := url.Values{}
+					for k, v := range formData {
+						bodyForm.Set(k, v)
+					}
+					reqBody = strings.NewReader(bodyForm.Encode())
+				case BODY_JSON:
+					reqBody = strings.NewReader(string(marshal))
+				}
+			}
+		} else {
+			reqBody = strings.NewReader(string(marshal))
+		}
 	}
 
 	req, err := http.NewRequest(method, path, reqBody)
@@ -144,12 +168,12 @@ func request(path string, method string, header map[string]string, query map[str
 
 func ppd(path string, method string, query map[string]string, body interface{}, resultData interface{}, bodyType, respType int, client *http.Client, appCtx context.Context) error {
 	header := make(map[string]string)
-	header["Accept"] = "application/json"
+	header[ACCEPT] = BODY_JSON
 	switch bodyType {
 	case FORM:
-		header["Content-Type"] = "application/x-www-form-urlencoded"
+		header[CONTENT_TYPE] = BODY_FORM
 	case JSON:
-		header["Content-Type"] = "application/json"
+		header[CONTENT_TYPE] = BODY_JSON
 	default:
 
 	}

@@ -76,3 +76,7 @@ func UpdateByKey[T any](tableName string, fields []string, values []T, f func(v 
 	}
 	return
 }
+
+func GeneralToSql(sql string, args []interface{}) string {
+	return fmt.Sprintf(strings.ReplaceAll(sql, "?", "%v"), args)
+}

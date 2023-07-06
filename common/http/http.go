@@ -182,7 +182,7 @@ func ppd(path string, method string, query map[string]string, body interface{}, 
 
 func Get(path string, query map[string]string, resultData interface{}, respType int, client *http.Client, appCtx context.Context) error {
 	header := make(map[string]string)
-	header["Accept"] = "application/json"
+	header[ACCEPT] = BODY_JSON
 	return request(path, GET, header, query, nil, resultData, respType, client, appCtx)
 }
 

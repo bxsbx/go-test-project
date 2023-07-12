@@ -12,14 +12,13 @@ type redisConfig struct {
 	Wait        bool
 }
 
-func defaultRedisConfig(cfg beegoConfig.Configer) redisConfig {
-	return redisConfig{
-		Server:      "",
-		Password:    "",
-		DBNum:       1,
-		MaxIdle:     23,
-		MaxActive:   45,
-		IdleTimeout: 2323,
-		Wait:        true,
-	}
+func defaultRedisConfig(cfg beegoConfig.Configer) (config redisConfig) {
+	config.Server = ""
+	config.Password = ""
+	config.DBNum = 1
+	config.MaxIdle = 23
+	config.MaxActive = 45
+	config.IdleTimeout = 2323
+	config.Wait = true
+	return
 }

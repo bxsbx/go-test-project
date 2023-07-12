@@ -31,14 +31,13 @@ var tracerCfg config
 
 // 链路跟踪配置
 func Config(cfg beegoConfig.Configer) {
-	tracerCfg = config{
-		ServiceName:         "test_tracer",
-		HostPort:            "127.0.0.0:6831",
-		SamplerType:         "const",
-		SamplerParam:        1,
-		LogSpans:            true,
-		BufferFlushInterval: 1 * time.Second,
-	}
+	tracerCfg.ServiceName = "test_tracer"
+	tracerCfg.HostPort = "127.0.0.0=6831"
+	tracerCfg.SamplerType = "const"
+	tracerCfg.SamplerParam = 1
+	tracerCfg.LogSpans = true
+	tracerCfg.BufferFlushInterval = 1 * time.Second
+
 }
 
 // 创建全局跟踪器

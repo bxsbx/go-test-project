@@ -11,13 +11,12 @@ type mongoDBConfig struct {
 	DbName     string
 }
 
-func defaultMongoDBConfig(cfg beegoConfig.Configer) mongoDBConfig {
-	return mongoDBConfig{
-		Host:       "",
-		UserName:   "",
-		Password:   "",
-		MaxPool:    12,
-		AuthSource: "",
-		DbName:     "",
-	}
+func defaultMongoDBConfig(cfg beegoConfig.Configer) (config mongoDBConfig) {
+	config.Host = ""
+	config.UserName = ""
+	config.Password = ""
+	config.MaxPool = 12
+	config.AuthSource = ""
+	config.DbName = ""
+	return
 }

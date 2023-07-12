@@ -12,14 +12,13 @@ type mqConfig struct {
 	ConnMaxLifetime int
 }
 
-func defaultMqConfig(cfg beegoConfig.Configer) mqConfig {
-	return mqConfig{
-		Host:            "",
-		Port:            0,
-		UserName:        "",
-		Password:        "",
-		MaxOpenConn:     0,
-		MaxIdleConn:     0,
-		ConnMaxLifetime: 0,
-	}
+func defaultMqConfig(cfg beegoConfig.Configer) (config mqConfig) {
+	config.Host = ""
+	config.Port = 0
+	config.UserName = ""
+	config.Password = ""
+	config.MaxOpenConn = 0
+	config.MaxIdleConn = 0
+	config.ConnMaxLifetime = 0
+	return
 }

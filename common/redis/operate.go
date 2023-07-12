@@ -56,13 +56,30 @@ func (m *redisObj) GetString(key string) (string, error) {
 }
 
 // 删除一个键
-func (m *redisObj) Remove(key string) error {
+func (m *redisObj) DelKey(key string) error {
 	conn := m.pool.Get()
 	defer conn.Close()
 	if err := conn.Err(); err != nil {
 		return err
 	}
 	if _, err := conn.Do("del", key); err != nil {
+		return err
+	}
+	return nil
+}
+
+// 删除多个键
+func (m *redisObj) DelKeys(keys []string) error {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return err
+	}
+	args := make([]interface{}, len(keys))
+	for i, key := range keys {
+		args[i] = key
+	}
+	if _, err := conn.Do("del", args...); err != nil {
 		return err
 	}
 	return nil
@@ -85,22 +102,24 @@ func (m *redisObj) GetKeys(patter string) ([]string, error) {
 	if err := conn.Err(); err != nil {
 		return nil, err
 	}
-	return redis.Strings(conn.Do("key", patter))
+	return redis.Strings(conn.Do("keys", patter))
 }
 
 // 删除匹配的所有键
-func (m *redisObj) DelKeys(patter string) error {
+func (m *redisObj) DelKeysWithPatter(patter string) error {
 	conn := m.pool.Get()
 	defer conn.Close()
 	if err := conn.Err(); err != nil {
 		return err
 	}
-	keys, err := redis.Strings(conn.Do("key", patter))
+	keys, err := redis.Strings(conn.Do("keys", patter))
 	if err != nil {
 		return err
 	}
-	for _, key := range keys {
-		conn.Do("del", key)
+	args := make([]interface{}, len(keys))
+	for i, key := range keys {
+		args[i] = key
 	}
+	_, err = conn.Do("del", args...)
 	return nil
 }

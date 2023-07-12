@@ -2,7 +2,6 @@ package gormdb
 
 import (
 	beegoConfig "github.com/astaxie/beego/config"
-	"log"
 )
 
 type dBConfig struct {
@@ -18,21 +17,16 @@ type dBConfig struct {
 	DBLog           bool
 }
 
-func defaultDBConfig(cfg beegoConfig.Configer) dBConfig {
-	port, err := cfg.Int("StandardProject::dbPort")
-	if err != nil {
-		log.Fatal(err)
-	}
-	return dBConfig{
-		DriveDB:         "mysql",
-		Host:            cfg.String("StandardProject::dbHost"),
-		Port:            port,
-		UserName:        cfg.String("StandardProject::dbUserName"),
-		Password:        cfg.String("StandardProject::dbPassword"),
-		DbName:          cfg.String("StandardProject::dbName"),
-		MaxOpenConn:     20,
-		MaxIdleConn:     10,
-		ConnMaxLifetime: 3600,
-		DBLog:           true,
-	}
+func defaultDBConfig(cfg beegoConfig.Configer) (config dBConfig) {
+	config.DriveDB = "mysql"
+	config.Host = cfg.String("StandardProject::dbHost")
+	config.Port, _ = cfg.Int("StandardProject::dbPort")
+	config.UserName = cfg.String("StandardProject::dbUserName")
+	config.Password = cfg.String("StandardProject::dbPassword")
+	config.DbName = cfg.String("StandardProject::dbName")
+	config.MaxOpenConn = 20
+	config.MaxIdleConn = 10
+	config.ConnMaxLifetime = 3600
+	config.DBLog = true
+	return
 }

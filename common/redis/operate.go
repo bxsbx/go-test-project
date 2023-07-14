@@ -19,6 +19,8 @@ if redis.call('get', KEYS[1]) == ARGV[1] then
    return '0' 					
 end`
 
+//----------------------string操作------------------------------
+
 // 设置一个有过期时间的键值对
 func (m *redisObj) SetTTL(key string, value string, ttl int64) error {
 	conn := m.pool.Get()
@@ -122,4 +124,96 @@ func (m *redisObj) DelKeysWithPatter(patter string) error {
 	}
 	_, err = conn.Do("del", args...)
 	return nil
+}
+
+//--------------------------list操作----------------------------
+
+// 从list右边移除元素
+func (m *redisObj) RPop(key string) (string, error) {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return "", err
+	}
+	return redis.String(conn.Do("RPop", key))
+}
+
+// 从list左边移除元素
+func (m *redisObj) LPop(key string) (string, error) {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return "", err
+	}
+	return redis.String(conn.Do("LPop", key))
+}
+
+// 向list右边添加元素
+func (m *redisObj) RPush(key string, value string) error {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return err
+	}
+	_, err := conn.Do("RPush", key, value)
+	return err
+}
+
+// 向list左边添加元素
+func (m *redisObj) LPush(key string, value string) error {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return err
+	}
+	_, err := conn.Do("LPush", key, value)
+	return err
+}
+
+// 从list中的索引下标获取元素
+func (m *redisObj) LIndex(key string, index int) (string, error) {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return "", err
+	}
+	return redis.String(conn.Do("LIndex", key, index))
+}
+
+// 获取list长度
+func (m *redisObj) LLen(key string) (int, error) {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return 0, err
+	}
+	return redis.Int(conn.Do("LLen", key))
+}
+
+func (m *redisObj) RPopInt(key string) (int, error) {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return 0, err
+	}
+	return redis.Int(conn.Do("RPop", key))
+}
+
+func (m *redisObj) RPushInt(key string, value int) error {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return err
+	}
+	_, err := conn.Do("RPush", key, value)
+	return err
+}
+
+func (m *redisObj) LIndexInt(key string, index int) (int, error) {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return 0, err
+	}
+	return redis.Int(conn.Do("LIndex", key, index))
 }

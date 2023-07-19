@@ -26,7 +26,7 @@ func newDB(cfg dBConfig) *gorm.DB {
 	db.DB().SetMaxOpenConns(cfg.MaxOpenConn)
 	db.DB().SetMaxIdleConns(cfg.MaxIdleConn)
 	db.DB().SetConnMaxLifetime(time.Duration(cfg.ConnMaxLifetime) * time.Second)
-
+	db.DB().SetConnMaxIdleTime(time.Duration(cfg.ConnMaxIdleTime) * time.Second)
 	db.LogMode(cfg.DBLog)
 	db.SetLogger(gorm.Logger{LogWriter: log.New(os.Stdout, "\r", 0)})
 	return db

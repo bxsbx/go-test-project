@@ -149,24 +149,28 @@ func (m *redisObj) LPop(key string) (string, error) {
 }
 
 // 向list右边添加元素
-func (m *redisObj) RPush(key string, value string) error {
+func (m *redisObj) RPush(key string, values ...interface{}) error {
 	conn := m.pool.Get()
 	defer conn.Close()
 	if err := conn.Err(); err != nil {
 		return err
 	}
-	_, err := conn.Do("RPush", key, value)
+	args := []interface{}{key}
+	args = append(args, values...)
+	_, err := conn.Do("RPush", args...)
 	return err
 }
 
 // 向list左边添加元素
-func (m *redisObj) LPush(key string, value string) error {
+func (m *redisObj) LPush(key string, values ...interface{}) error {
 	conn := m.pool.Get()
 	defer conn.Close()
 	if err := conn.Err(); err != nil {
 		return err
 	}
-	_, err := conn.Do("LPush", key, value)
+	args := []interface{}{key}
+	args = append(args, values...)
+	_, err := conn.Do("LPush", args...)
 	return err
 }
 
@@ -178,6 +182,16 @@ func (m *redisObj) LIndex(key string, index int) (string, error) {
 		return "", err
 	}
 	return redis.String(conn.Do("LIndex", key, index))
+}
+
+// 从范围中获取元素列表
+func (m *redisObj) LRange(key string, start, end int) ([]string, error) {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return nil, err
+	}
+	return redis.Strings(conn.Do("LRange", key, start, end))
 }
 
 // 获取list长度
@@ -199,16 +213,6 @@ func (m *redisObj) RPopInt(key string) (int, error) {
 	return redis.Int(conn.Do("RPop", key))
 }
 
-func (m *redisObj) RPushInt(key string, value int) error {
-	conn := m.pool.Get()
-	defer conn.Close()
-	if err := conn.Err(); err != nil {
-		return err
-	}
-	_, err := conn.Do("RPush", key, value)
-	return err
-}
-
 func (m *redisObj) LIndexInt(key string, index int) (int, error) {
 	conn := m.pool.Get()
 	defer conn.Close()
@@ -216,4 +220,69 @@ func (m *redisObj) LIndexInt(key string, index int) (int, error) {
 		return 0, err
 	}
 	return redis.Int(conn.Do("LIndex", key, index))
+}
+
+func (m *redisObj) LRangeInt(key string, start, end int) ([]int, error) {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return nil, err
+	}
+	return redis.Ints(conn.Do("LRange", key, start, end))
+}
+
+//-------------------------set操作------------------------------
+
+// 集合中添加元素
+func (m *redisObj) SAdd(key string, values ...interface{}) error {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return err
+	}
+	args := []interface{}{key}
+	args = append(args, values...)
+	_, err := conn.Do("SAdd", args...)
+	return err
+}
+
+// 获取集合的所有元素
+func (m *redisObj) SMembersInt(key string) ([]int, error) {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return nil, err
+	}
+	return redis.Ints(conn.Do("SMembers", key))
+}
+
+// 获取集合的所有元素
+func (m *redisObj) SMembers(key string) ([]string, error) {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return nil, err
+	}
+	return redis.Strings(conn.Do("SMembers", key))
+}
+
+// ----------------------------hash操作-----------------------
+
+func (m *redisObj) HExists(key, field string) (bool, error) {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return false, err
+	}
+	return redis.Bool(conn.Do("HExists", key, field))
+}
+
+func (m *redisObj) HSet(key, field, value string) error {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return err
+	}
+	_, err := conn.Do("HSet", key, field, value)
+	return err
 }

@@ -14,6 +14,7 @@ type dBConfig struct {
 	MaxOpenConn     int
 	MaxIdleConn     int
 	ConnMaxLifetime int
+	ConnMaxIdleTime int
 	DBLog           bool
 }
 
@@ -27,6 +28,7 @@ func defaultDBConfig(cfg beegoConfig.Configer) (config dBConfig) {
 	config.MaxOpenConn = 20
 	config.MaxIdleConn = 10
 	config.ConnMaxLifetime = 3600
+	config.ConnMaxIdleTime = 3600
 	config.DBLog = true
 	return
 }

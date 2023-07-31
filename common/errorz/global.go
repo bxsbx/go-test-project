@@ -1,7 +1,7 @@
 package errorz
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 func GlobalError(err error) (code int, msg string) {

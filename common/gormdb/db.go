@@ -3,12 +3,11 @@ package gormdb
 import (
 	"fmt"
 	beegoConfig "github.com/astaxie/beego/config"
-	"github.com/jinzhu/gorm"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
-	"os"
 	"time"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 var dBMap = make(map[string]*gorm.DB)
@@ -19,16 +18,21 @@ const (
 
 func newDB(cfg dBConfig) *gorm.DB {
 	openUrl := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&loc=Asia%sShanghai&parseTime=true", cfg.UserName, cfg.Password, cfg.Host, cfg.Port, cfg.DbName, "%2F")
-	db, err := gorm.Open(cfg.DriveDB, openUrl)
+	db, err := gorm.Open(mysql.Open(openUrl), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+		Logger:                                   logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		log.Fatalf("数据库初始化失败, err:%v", err)
 	}
-	db.DB().SetMaxOpenConns(cfg.MaxOpenConn)
-	db.DB().SetMaxIdleConns(cfg.MaxIdleConn)
-	db.DB().SetConnMaxLifetime(time.Duration(cfg.ConnMaxLifetime) * time.Second)
-	db.DB().SetConnMaxIdleTime(time.Duration(cfg.ConnMaxIdleTime) * time.Second)
-	db.LogMode(cfg.DBLog)
-	db.SetLogger(gorm.Logger{LogWriter: log.New(os.Stdout, "\r", 0)})
+	sqlDB, err := db.DB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	sqlDB.SetMaxOpenConns(cfg.MaxOpenConn)
+	sqlDB.SetMaxIdleConns(cfg.MaxIdleConn)
+	sqlDB.SetConnMaxLifetime(time.Duration(cfg.ConnMaxLifetime) * time.Second)
+	sqlDB.SetConnMaxIdleTime(time.Duration(cfg.ConnMaxIdleTime) * time.Second)
 	return db
 }
 

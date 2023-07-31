@@ -4,7 +4,7 @@ import (
 	"StandardProject/common/gormdb"
 	"StandardProject/types/db"
 	"context"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type studentModel struct {

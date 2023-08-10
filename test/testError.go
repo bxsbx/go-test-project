@@ -2,9 +2,7 @@ package main
 
 import (
 	"StandardProject/common/errorz"
-	"encoding/json"
 	"errors"
-	"fmt"
 )
 
 func A() error {
@@ -65,14 +63,14 @@ func main() {
 	//fmt.Println(stack.Size())
 	//
 	//stack.CutCapSize()
-
-	err := C()
-	fmt.Printf("%p\n", err)
-	//fmt.Println(err.Error())
-	stack := errorz.GetErrorStackList(err)
-	fmt.Println(stack)
-	//fmt.Println(Info{stack, "vewevw", 23})
-	marshal, _ := json.Marshal(stack)
-	fmt.Println(string(marshal))
+	//
+	//err := C()
+	//fmt.Printf("%p\n", err)
+	////fmt.Println(err.Error())
+	//stack := errorz.GetErrorStackList(err)
+	//fmt.Println(stack)
+	////fmt.Println(Info{stack, "vewevw", 23})
+	//marshal, _ := json.Marshal(stack)
+	//fmt.Println(string(marshal))
 
 }

@@ -1,6 +1,13 @@
 package main
 
+import (
+	"StandardProject/cron"
+	"time"
+)
+
 func main() {
-	//tracer := common.NewTracer(nil)
-	//tracer.Close()
+	cron.StartCron()
+	for i := 0; i < 100; i++ {
+		time.Sleep(1000000 * time.Second)
+	}
 }

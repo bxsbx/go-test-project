@@ -28,7 +28,7 @@ func (m *redisObj) SetTTL(key string, value string, ttl int64) error {
 	if err := conn.Err(); err != nil {
 		return err
 	}
-	if _, err := conn.Do("setex", key, ttl, value); err != nil {
+	if _, err := conn.Do("SetEX", key, ttl, value); err != nil {
 		return err
 	}
 	return nil
@@ -47,6 +47,39 @@ func (m *redisObj) Set(key string, value string) error {
 	return nil
 }
 
+// 设置锁
+func (m *redisObj) SetNX(key string, value string) (bool, error) {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return false, err
+	}
+	return redis.Bool(conn.Do("SetNX", key, value))
+}
+
+// 设置某个键的过期时间
+func (m *redisObj) Expire(key string, ttl int64) error {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return err
+	}
+	if _, err := conn.Do("Expire", key, ttl); err != nil {
+		return err
+	}
+	return nil
+}
+
+// 设置锁带时间（避免异常情况导致无法释放锁）
+func (m *redisObj) SetNXTtl(key string, value string, ttl int64) (bool, error) {
+	success, err := m.SetNX(key, value)
+	if err != nil {
+		return false, err
+	}
+	err = m.Expire(key, ttl)
+	return success, err
+}
+
 // 获取一个键的值
 func (m *redisObj) GetString(key string) (string, error) {
 	conn := m.pool.Get()
@@ -55,6 +88,16 @@ func (m *redisObj) GetString(key string) (string, error) {
 		return "", err
 	}
 	return redis.String(conn.Do("get", key))
+}
+
+// 获取一个键的值
+func (m *redisObj) GetStringV2(key string) ParesType {
+	conn := m.pool.Get()
+	defer conn.Close()
+	if err := conn.Err(); err != nil {
+		return GetParesType(nil, err)
+	}
+	return GetParesType(conn.Do("get", key))
 }
 
 // 删除一个键

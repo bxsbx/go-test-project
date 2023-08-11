@@ -31,6 +31,8 @@ type T struct {
 	Num         *int       `json:"num"`
 }
 
+//go:generate go run main.go
+//go:generate go version
 func main() {
 	now := time.Now()
 	var item T

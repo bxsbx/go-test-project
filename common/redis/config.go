@@ -13,8 +13,8 @@ type redisConfig struct {
 }
 
 func defaultRedisConfig(cfg beegoConfig.Configer) (config redisConfig) {
-	config.Server = "127.0.0.1"
-	config.Password = ""
+	config.Server = "172.16.1.23:6379"
+	config.Password = "123456"
 	config.DBNum = 1
 	config.MaxIdle = 23
 	config.MaxActive = 45

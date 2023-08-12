@@ -1,0 +1,37 @@
+basePath: /api/v1
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /resources:
+    get:
+      description: 查询资源的知识点名(供服务端使用)
+      parameters:
+      - description: Group ID
+        in: path
+        name: group_id
+        required: true
+        type: integer
+      - description: Account ID
+        in: path
+        name: account_id
+        required: true
+        type: integer
+      responses: {}
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

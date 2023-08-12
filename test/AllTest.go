@@ -1,76 +1,38 @@
 package main
 
 import (
-	"StandardProject/common/util"
+	"StandardProject/common/local"
+	"bufio"
 	"fmt"
-	"reflect"
+	"os"
+	"strconv"
 )
 
-type name struct {
-	momo []string
-}
+var Map = make(map[string]string)
+var lockMap = local.NewLockMap(5, 2)
 
-type Mo struct {
-	Id   int
-	Name name
-	UU   []string
-}
-
-func as(a []string) {
-	fmt.Printf("---%p\n", a)
-	a[0] = "33333"
-	//fmt.Println(a)
+func M(k string) {
+	for i := 0; i < 10; i++ {
+		lock := lockMap.GetLock(strconv.Itoa(i))
+		lock.Lock()
+		fmt.Println(k, i, lock)
+		Map[fmt.Sprintf("%v", lock)] = "lock"
+		lock.Unlock()
+	}
 }
 
 func main() {
-
-	//mo := Mo{
-	//	23,
-	//	"fwefe",
-	//	[]string{"csasc", "csscs"},
-	//}
-	//mm := mo
-
-	ii := []string{"csasc", "csscs"}
-
-	aa := ii[0:1]
-	aa[0] = "vfwefwe"
-
-	fmt.Printf("%p\n", ii)
-	fmt.Printf("%p\n", aa)
-
-	fmt.Println(ii)
-	fmt.Println(aa)
-	as(aa)
-	fmt.Println(aa)
-
-	pp := make([]Mo, 5)
-
-	pp[0].Id = 2323
-	pp[0].Name = name{
-		[]string{"2323666"},
+	for i := 0; i < 10; i++ {
+		go M(strconv.Itoa(i))
 	}
-	fmt.Println(len(pp), pp)
-
-	fmt.Printf("%p\n", &pp[0])
-	fmt.Println(pp[0])
-	nn := Mo{
-		Id: 2345567899,
-		UU: ii,
-	}
-	nn = pp[0]
-	fmt.Printf("%p\n", nn.Name.momo)
-	pp[0] = nn
-	nn.Name.momo[0] = "2323111"
-	fmt.Println(pp[0])
-	fmt.Printf("%p\n", pp[0].Name.momo)
-
-	dst := reflect.New(reflect.TypeOf(nn)).Elem()
-	fmt.Println(dst.NumField())
-	field := dst.Field(0)
-	field.Set(reflect.ValueOf(23777))
-	fmt.Println(dst)
-
-	util.ColorPrint(dst, util.BLUE)
-
+	reader := bufio.NewReader(os.Stdin)
+	line, err := reader.ReadString('\n')
+	fmt.Println(line, err)
+	tem := Map
+	tem2 := lockMap
+	fmt.Println(tem2)
+	fmt.Println(tem)
+	//a := &sync.Mutex{}
+	//sprintf := fmt.Sprintf("%v", &a)
+	//fmt.Println(sprintf)
 }

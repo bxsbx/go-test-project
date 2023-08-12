@@ -47,7 +47,7 @@ func (m *redisObj) Set(key string, value string) error {
 	return nil
 }
 
-// 设置锁
+// 设置锁(一般用于分布式，获取不到则重试获取锁或者返回其他数据) 如果是单机部署的(则可以使用本地map存锁的方式)
 func (m *redisObj) SetNX(key string, value string) (bool, error) {
 	conn := m.pool.Get()
 	defer conn.Close()
@@ -91,7 +91,7 @@ func (m *redisObj) GetString(key string) (string, error) {
 }
 
 // 获取一个键的值
-func (m *redisObj) GetStringV2(key string) ParesType {
+func (m *redisObj) GetStringV2(key string) *ParesType {
 	conn := m.pool.Get()
 	defer conn.Close()
 	if err := conn.Err(); err != nil {

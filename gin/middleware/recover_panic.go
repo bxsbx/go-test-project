@@ -13,7 +13,7 @@ import (
 
 // 使用recover（用于从运行时的 panic 中恢复） 从返回值中获取到导致 panic 的具体信息，并用zap做日志记录
 // gin中也有自带的
-
+// 只能处理可恢复的panic，对于falatPanic等不可恢复的（程序最终都会终止）
 func RecoverPanic() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {

@@ -7,17 +7,17 @@ type ParesType struct {
 	err   error
 }
 
-func GetParesType(reply interface{}, err error) ParesType {
-	return ParesType{
+func GetParesType(reply interface{}, err error) *ParesType {
+	return &ParesType{
 		reply,
 		err,
 	}
 }
 
-func (p ParesType) Sting() (string, error) {
+func (p *ParesType) Sting() (string, error) {
 	return redis.String(p.reply, p.err)
 }
 
-func (p ParesType) Int() (int, error) {
+func (p *ParesType) Int() (int, error) {
 	return redis.Int(p.reply, p.err)
 }

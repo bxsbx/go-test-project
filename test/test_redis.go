@@ -8,7 +8,7 @@ import (
 
 func main() {
 	obj := redis.DefaultRedisObj()
-	obj.SetNum("ok", "csc")
+	obj.Set("ok", "csc")
 	obj.Set("oeek", "csc")
 	getString, _ := obj.GetString("ok")
 	fmt.Println(getString)

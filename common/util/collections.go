@@ -10,6 +10,15 @@ func ListObjToMap[T, V any, K comparable](slice []T, f func(obj T) (K, V)) map[K
 	return objMap
 }
 
+// map转list
+func MapToList[T, V any, K comparable](curMap map[K]V, f func(k K, v V) T) []T {
+	list := make([]T, 0)
+	for k, v := range curMap {
+		list = append(list, f(k, v))
+	}
+	return list
+}
+
 // list转换其他类型的list
 func ListObjToListObj[T any, U any](slice []T, f func(obj T) U) []U {
 	list := make([]U, len(slice))

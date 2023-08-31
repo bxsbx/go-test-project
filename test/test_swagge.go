@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swagger/gin-swagger"
 	swaggerFiles "github.com/swaggo/files"
-	_ "github/mwqnice/swag/docs" // 千万不要忘了导入把你上一步生成的docs
+	_ "github/mwqnice/swag/docs" // 千万不要忘了导入把你上一步生成的docsc
 )
 
 type Article struct {

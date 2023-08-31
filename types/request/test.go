@@ -1,5 +1,5 @@
 package request
 
 type Test1Params struct {
-	Id string `form:"id" valid:"Required"`
+	Id int `form:"id" valid:"Required"`
 }

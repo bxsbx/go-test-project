@@ -4,7 +4,7 @@ import (
 	"StandardProject/models"
 	"StandardProject/types/db"
 	"context"
-	"time"
+	"strconv"
 )
 
 type testService struct {
@@ -24,7 +24,18 @@ func (c *testService) Test2() ([]db.Student, error) {
 	return studentModel.FindAll()
 }
 
-func (c *testService) Test3() (string, error) {
-	time.Sleep(time.Second * 2)
-	return "sleep", nil
+func (c *testService) Test3(id int) (string, error) {
+	//if id%2 == 0 {
+	//	time.Sleep(time.Second * 2)
+	//} else if id%3 == 0 {
+	//	time.Sleep(time.Second * 3)
+	//} else if id%4 == 0 {
+	//	time.Sleep(time.Second * 4)
+	//} else if id%5 == 0 {
+	//	time.Sleep(time.Second * 5)
+	//} else {
+	//time.Sleep(time.Second * 1)
+	//}
+
+	return strconv.Itoa(id), nil
 }

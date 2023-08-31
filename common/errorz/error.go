@@ -9,32 +9,32 @@ const (
 	STOP_METHOD = "reflect.Value.call"
 )
 
-type myError struct {
+type MyError struct {
 	code  int
 	msg   string
 	err   error
 	stack []recorde // 记录错误链
 }
 
-func (e *myError) Error() string {
+func (e *MyError) Error() string {
 	return fmt.Sprintf("code: %d, msg：%s", e.code, e.msg)
 }
 
-func (e *myError) Unwrap() error {
+func (e *MyError) Unwrap() error {
 	return e.err
 }
 
-func (e myError) GetCode() int {
+func (e MyError) GetCode() int {
 	return e.code
 }
 
-func (e myError) GetMsg() string {
+func (e MyError) GetMsg() string {
 	return e.msg
 }
 
 func Code(code int) error {
 	msg := GetMsgWithCode(code)
-	return &myError{
+	return &MyError{
 		code:  code,
 		msg:   msg,
 		stack: caller(),
@@ -42,7 +42,7 @@ func Code(code int) error {
 }
 
 func CodeMsg(code int, msg string) error {
-	return &myError{
+	return &MyError{
 		code:  code,
 		msg:   msg,
 		stack: caller(),
@@ -51,7 +51,7 @@ func CodeMsg(code int, msg string) error {
 
 func CodeError(code int, err error) error {
 	msg := GetMsgWithCode(code)
-	return &myError{
+	return &MyError{
 		code:  code,
 		msg:   msg,
 		err:   err,
@@ -60,7 +60,7 @@ func CodeError(code int, err error) error {
 }
 
 func CodeMsgError(code int, msg string, err error) error {
-	return &myError{
+	return &MyError{
 		code:  code,
 		msg:   msg,
 		err:   err,
@@ -69,7 +69,7 @@ func CodeMsgError(code int, msg string, err error) error {
 }
 
 func Error(err error) error {
-	return &myError{
+	return &MyError{
 		err:   err,
 		stack: caller(),
 	}
@@ -142,7 +142,7 @@ func GetErrorCallerList(err error) []ErrorCaller {
 		if err == nil {
 			break
 		}
-		if myErr, ok := err.(*myError); ok {
+		if myErr, ok := err.(*MyError); ok {
 			for i := length; i < len(myErr.stack); i++ {
 				v := myErr.stack[i]
 				called := fmt.Sprintf("%s:%d ———— %s", v.File, v.Line, v.Method)

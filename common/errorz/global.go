@@ -5,13 +5,13 @@ import (
 )
 
 func GlobalError(err error) (code int, msg string) {
-	myErr, ok := err.(*myError)
+	myErr, ok := err.(*MyError)
 	temp := myErr
 	for ok {
 		myErr = temp
 		if myErr.err != nil {
 			err = myErr.err
-			temp, ok = err.(*myError)
+			temp, ok = err.(*MyError)
 		} else {
 			break
 		}

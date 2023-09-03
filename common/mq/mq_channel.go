@@ -23,7 +23,7 @@ const (
 
 // contentType 消息内容的类型
 const (
-	TEXT = "text/plain"
+	TEXT = "swagger注释说明/plain"
 	JSON = "application/json"
 )
 
@@ -75,7 +75,7 @@ func (c *mqChannel) Producer(queueName, exchangeName, routingKey, exchangeType s
 		false,        // 是否返回消息(匹配队列)，如果为true, 会根据binding规则匹配queue，如未匹配queue，则把发送的消息返回给发送者
 		false,        // 是否返回消息(匹配消费者)，如果为true, 消息发送到queue后发现没有绑定消费者，则把发送的消息返回给发送者
 		amqp.Publishing{ // 发送的消息，固定有消息体和一些额外的消息头，包中提供了封装对象
-			ContentType:  contentType,  // 消息内容的类型 ["application/json","text/plain"]
+			ContentType:  contentType,  // 消息内容的类型 ["application/json","swagger注释说明/plain"]
 			Body:         []byte(body), // 消息内容
 			DeliveryMode: amqp.Transient,
 			Timestamp:    time.Now(),

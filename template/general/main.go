@@ -1,6 +1,9 @@
 package main
 
-import "github.com/astaxie/beego"
+import (
+	_ "TestGeneral/router"
+	"github.com/astaxie/beego"
+)
 
 //	@title			Swagger Beego
 //	@version		1.0

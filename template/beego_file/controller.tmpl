@@ -12,8 +12,8 @@ type {{.GroupName}}Controller struct {
 // @Summary	{{.Swagger.Summary}}
 // @Tags {{.Swagger.Tags}}
 // @Produce	{{.Swagger.Produce}}
-{{range .Swagger.Params}}// @Param {{.Name}} {{.ParamType}} {{.DataType}} {{.IsNeed}} {{if .Description}}"{{.Description}}"{{end}}
-{{end}}// @Response	200	{object}	Response{data=response.{{.FunName}}Resp}
+{{range .Swagger.Params}}// @Param {{.Name}} {{.ParamType}} {{.DataType}} {{.IsNeed}} {{if .Description}}"{{.Description}}"{{else}}" "{{end}}
+{{end}}// @Response	200	{object}	response.Response{data=response.{{.FunName}}Resp}
 // @Router		{{.Router}} [{{.Method}}]
 func (c *{{.GroupName}}Controller) {{.FunName}}() {
 	var req request.{{.FunName}}Req

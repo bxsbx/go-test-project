@@ -74,7 +74,7 @@ func main() {
 	myTemplate.LowerFunName = util.FirstLower(myTemplate.FunName)
 
 	funcName := func(line string) bool {
-		if len(line) > 4 && line[:4] == "func" && strings.Contains(line, myTemplate.FunName) {
+		if len(line) > 4 && line[:4] == "func" && strings.Contains(line, myTemplate.FunName+"()") {
 			return true
 		}
 		return false
@@ -92,7 +92,7 @@ func main() {
 
 	//swag注释格式化
 	exec.Command("swag", "fmt", "-d", ControllersFilePath).Run()
-	err := exec.Command("swag", "init", "-dir", "H:\\GoProject\\StandardProject\\template\\general").Run()
+	err := exec.Command("swag", "init", "-dir", "H:\\GoProject\\StandardProject\\template\\general", "-output", "H:\\GoProject\\StandardProject\\template\\general\\docs").Run()
 	if err != nil {
 		fmt.Println(err)
 	}

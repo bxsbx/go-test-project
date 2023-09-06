@@ -1,0 +1,89 @@
+definitions:
+  response.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      errStack: {}
+      msg:
+        type: string
+    type: object
+  response.TestFuncResp:
+    properties:
+      content:
+        type: string
+      created_on:
+        type: integer
+      deleted_on:
+        type: integer
+      desc:
+        type: string
+      is_del:
+        description: 是否删除
+        type: integer
+      modified_by:
+        type: string
+      modified_on:
+        type: integer
+      title:
+        description: 标题
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8088
+info:
+  contact:
+    email: support@swagger_controller.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: 这是一个beego框架的swagger测试
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Beego
+  version: "1.0"
+paths:
+  /v1/web/teacher/test/get:
+    get:
+      parameters:
+      - description: id主键
+        in: path
+        name: id
+        type: integer
+      - description: 名称
+        in: formData
+        name: name
+        required: true
+        type: string
+      - description: ' '
+        in: body
+        name: is_ok
+        schema:
+          type: boolean
+      - description: ' '
+        in: query
+        name: money
+        required: true
+        type: number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.TestFuncResp'
+              type: object
+      summary: 测试分组2
+      tags:
+      - TestGroup
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

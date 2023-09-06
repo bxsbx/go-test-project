@@ -47,7 +47,7 @@ func NewArticle() Article {
 // @Produce	json
 // @Param		id	path		int	true	"文章ID"
 // @Response	500 {object}	string	"服务内部错误"
-// @Response	200	{object}	Article
+// @Response	200	{object}	Response{data=Article}
 // @Router		/api/v1/articles/{id} [get]
 func (a Article) Get(c *gin.Context) {
 	c.JSON(http.StatusInternalServerError, Article{Content: "ccqdqdqd"})

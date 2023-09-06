@@ -1,0 +1,14 @@
+{{if .IsRouterFile}}package group
+
+import (
+	"{{.ProjectName}}/controllers"
+	"github.com/astaxie/beego"
+)
+
+func {{.GroupName}}() {
+
+    //{{.Swagger.Summary}}
+    beego.Router("{{.Router}}", &controllers.{{.GroupName}}Controller{}, "{{.Method}}:{{.FunName}}")
+    // router general tag
+}{{else}}   //{{.Swagger.Summary}}
+    beego.Router("{{.Router}}", &controllers.{{.GroupName}}Controller{}, "{{.Method}}:{{.FunName}}"){{end}}

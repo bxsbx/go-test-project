@@ -1,0 +1,32 @@
+{{if .IsControllerFile}}package controllers
+
+import (
+	"{{.ProjectName}}/services"
+	"{{.ProjectName}}/types/request"
+)
+
+type {{.GroupName}}Controller struct {
+	BaseController
+}
+{{end}}
+// @Summary	{{.Swagger.Summary}}
+// @Tags {{.Swagger.Tags}}
+// @Produce	{{.Swagger.Produce}}
+{{range .Swagger.Params}}// @Param {{.Name}} {{.ParamType}} {{.DataType}} {{.IsNeed}} {{if .Description}}"{{.Description}}"{{end}}
+{{end}}// @Response	200	{object}	Response{data=response.{{.FunName}}Resp}
+// @Router		{{.Router}} [{{.Method}}]
+func (c *{{.GroupName}}Controller) {{.FunName}}() {
+	var req request.{{.FunName}}Req
+	err := c.{{.ValidateType}}(&req)
+	if err != nil {
+		c.OutputError(err)
+		return
+	}
+	{{.LowerFunName}}Service := services.New{{.GroupName}}Service(c.AppCtx)
+	data, err := {{.LowerFunName}}Service.{{.FunName}}()
+	if err != nil {
+		c.OutputError(err)
+		return
+	}
+	c.OutputSuccess(data)
+}

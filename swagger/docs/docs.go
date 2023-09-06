@@ -200,7 +200,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/swagger_controller.Article"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/swagger_controller.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/swagger_controller.Article"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "500": {
@@ -375,6 +387,18 @@ const docTemplate = `{
                 },
                 "title": {
                     "description": "标题",
+                    "type": "string"
+                }
+            }
+        },
+        "swagger_controller.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "data": {},
+                "msg": {
                     "type": "string"
                 }
             }

@@ -1,8 +1,9 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
+	"regexp"
+	"strings"
 	"time"
 )
 
@@ -34,14 +35,10 @@ type T struct {
 //go:generate go run main.go
 //go:generate go version
 func main() {
-	now := time.Now()
-	var item T
-	item.F_start_day = &now
-	c := 23
-	item.Num = &c
-	marshal, _ := json.Marshal(item)
-	fmt.Println(string(marshal))
-	var a T
-	json.Unmarshal(marshal, &a)
-	fmt.Println(*a.Num)
+	left := strings.Trim("   Name  string  `form:\"name\" valid:\"Required\"` // 名称", " ")
+	//split := regexp.MustCompile("\\s+").Split(left, -1)
+	//fmt.Println(split)
+	//var bytes []byte
+	find := regexp.MustCompile("`.*`").FindString(left)
+	fmt.Println(find)
 }

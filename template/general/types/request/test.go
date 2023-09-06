@@ -5,8 +5,8 @@ type Test1Params struct {
 }
 
 type TestFuncReq struct {
-	Id    int     `path:"id"`                    // id主键
-	Name  string  `form:"name" valid:"Required"` // 名称
-	IsOk  bool    `json:"is_ok"`
-	Money float64 `form:"money"`
+	Id    int     `query:"id" valid:"Required"`   // id主键
+	Name  string  `query:"name" valid:"Required"` // 名称
+	IsOk  bool    `query:"is_ok"`
+	Money float64 `query:"money"`
 }

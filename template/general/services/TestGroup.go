@@ -15,7 +15,3 @@ func NewTestGroupService(appCtx context.Context) *TestGroupService {
 func (s *TestGroupService) TestFunc() (data string, err error) {
 	return
 }
-
-func (s *TestGroupService) TestFunc2() (data string, err error) {
-	return
-}

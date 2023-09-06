@@ -53,7 +53,7 @@ func main() {
 		Tags:    myTemplate.GroupName,
 		Produce: Produce,
 	}
-	swagger.Params = GetParamsFromReqType(myTemplate.ReqType)
+	swagger.Params = GetParamsFromReqType(myTemplate)
 	if swagger.Params == nil {
 		log.Fatal("请求类型不存在")
 	}
@@ -128,8 +128,8 @@ type myTemplate struct {
 }
 
 // 从请求类型中获取Swagger信息
-func GetParamsFromReqType(reqType string) []Params {
-	reqTypeStr := "type " + reqType + " struct {"
+func GetParamsFromReqType(myTemplate myTemplate) []Params {
+	reqTypeStr := "type " + myTemplate.ReqType + " struct {"
 	bytes, err := os.ReadFile(TypePath)
 	if err != nil {
 		log.Fatal(err)
@@ -154,8 +154,8 @@ func GetParamsFromReqType(reqType string) []Params {
 			tags := strings.Trim(regexp.MustCompile("`.*`").FindString(line), "`")
 			params.Name = strings.Trim(regexp.MustCompile("\"\\w*\"").FindString(tags), "\"")
 			params.ParamType = ParamTypeMap[strings.Split(tags, ":")[0]]
-			if params.ParamType == "" {
-				params.ParamType = ParamTypeMap["form"] // 默认form
+			if myTemplate.Method == http.MethodGet || myTemplate.Method == http.MethodDelete || params.ParamType == "" {
+				params.ParamType = "query"
 			}
 			params.Description = strings.Trim(strings.Trim(regexp.MustCompile("//.*").FindString(line), "//"), " ")
 			list = append(list, params)

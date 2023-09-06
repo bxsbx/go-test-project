@@ -39,7 +39,7 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "id主键",
                         "name": "id",
-                        "in": "path"
+                        "in": "formData"
                     },
                     {
                         "type": "string",
@@ -49,18 +49,16 @@ const docTemplate = `{
                         "required": true
                     },
                     {
+                        "type": "boolean",
                         "description": " ",
                         "name": "is_ok",
-                        "in": "body",
-                        "schema": {
-                            "type": "boolean"
-                        }
+                        "in": "formData"
                     },
                     {
                         "type": "number",
                         "description": " ",
                         "name": "money",
-                        "in": "query",
+                        "in": "formData",
                         "required": true
                     }
                 ],

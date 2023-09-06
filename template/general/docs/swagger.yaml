@@ -50,7 +50,7 @@ paths:
     get:
       parameters:
       - description: id主键
-        in: path
+        in: formData
         name: id
         type: integer
       - description: 名称
@@ -59,12 +59,11 @@ paths:
         required: true
         type: string
       - description: ' '
-        in: body
+        in: formData
         name: is_ok
-        schema:
-          type: boolean
+        type: boolean
       - description: ' '
-        in: query
+        in: formData
         name: money
         required: true
         type: number

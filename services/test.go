@@ -3,6 +3,7 @@ package services
 import (
 	"StandardProject/models"
 	"context"
+	"database/sql"
 	"strconv"
 )
 
@@ -21,10 +22,10 @@ func (c *testService) Test1() (string, error) {
 func (c *testService) Test2(id int, name string) ([]models.Student, error) {
 	studentModel := models.NewStudentModel(c.appCtx)
 	//return studentModel.Find()
-	//where := models.Student{
-	//	Id:   id,
-	//	Name: name,
-	//}
+	where := models.Student{
+		Id:   id,
+		Name: name,
+	}
 	//return studentModel.SelectFieldsFindByStudent(nil, where)
 	//studentModel.DeleteByPrimaryKeys(id, name)
 	//studentModel.Find()
@@ -34,17 +35,17 @@ func (c *testService) Test2(id int, name string) ([]models.Student, error) {
 	//	"Grade": "beebe",
 	//	"from":  23,
 	//})
-	//update := models.Student{
-	//	Class: "id",
-	//	Grade: sql.NullString{String: "name", Valid: true},
-	//	From:  23,
-	//}
-	//studentModel.UpdateByWhere(where, update)
-	var list []models.Student
-	list = append(list, models.Student{Name: "vasv", Class: "vwqwv", From: 3})
-	list = append(list, models.Student{Name: "vasv", Class: "vwqwv", From: 4})
-	list = append(list, models.Student{Name: "vasv", Class: "vwqwv", From: 44})
-	studentModel.BatchInsert(list)
+	update := models.Student{
+		Class: "",
+		Grade: sql.NullString{String: "", Valid: true},
+		From:  0,
+	}
+	studentModel.UpdateByWhere(where, update)
+	//var list []models.Student
+	//list = append(list, models.Student{Name: "vasv", Class: "vwqwv", From: 3})
+	//list = append(list, models.Student{Name: "vasv", Class: "vwqwv", From: 4})
+	//list = append(list, models.Student{Name: "vasv", Class: "vwqwv", From: 44})
+	//studentModel.BatchInsert(list)
 	return nil, nil
 }
 

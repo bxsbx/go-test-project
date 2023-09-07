@@ -1,0 +1,79 @@
+package models
+
+import (
+	//"{{.ProjectName}}/common/gormdb"
+	"context"
+	"database/sql"
+	"gorm.io/gorm"
+)
+
+const (
+	{{.ConstTableName}}_TABLE = "{{.TableName}}"
+)
+
+type {{.UpperTableName}} struct {
+{{range .Columns}}  {{.FieldName}} {{.Type}} `gorm:"column:{{.Name}}{{if eq .PrimaryKey "PRI"}};primary_key{{end}}"` {{if .Comment}}//{{.Comment}}{{end}}
+{{end}}
+}
+
+func ({{.UpperTableName}}) TableName() string {
+	return {{.ConstTableName}}_TABLE
+}
+
+type {{.LowerTableName}}Model struct {
+	db     *gorm.DB
+	appCtx context.Context
+}
+
+func New{{.UpperTableName}}Model(appCtx context.Context) *{{.LowerTableName}}Model {
+	return &{{.LowerTableName}}Model{
+		//db:     gormdb.DefaultDB(),
+		appCtx: appCtx,
+	}
+}
+
+func New{{.UpperTableName}}ModelWithDB(db *gorm.DB, appCtx context.Context) *{{.LowerTableName}}Model {
+	return &{{.LowerTableName}}Model{
+		db:     db,
+		appCtx: appCtx,
+	}
+}
+
+func (t *{{.LowerTableName}}Model) Find() ({{.ListName}} []{{.UpperTableName}}, err error) {
+	err = t.db.Find(&{{.ListName}}).Error
+	return
+}
+
+func (t *{{.LowerTableName}}Model) First(where {{.UpperTableName}}) ({{.LowerTableName}} {{.UpperTableName}}, err error) {
+	err = t.db.Where(where).First(&{{.LowerTableName}}).Error
+	return
+}
+
+func (t *{{.LowerTableName}}Model) SelectFieldsFindBy{{.UpperTableName}}(fields []string, where {{.UpperTableName}}) ({{.ListName}} []{{.UpperTableName}}, err error) {
+	if fields == nil {
+		err = t.db.Where(where).Find(&{{.ListName}}).Error
+	} else {
+		err = t.db.Select(fields).Where(where).Find(&{{.ListName}}).Error
+	}
+	return
+}
+
+func (t *{{.LowerTableName}}Model) BatchInsert(list []{{.UpperTableName}}) (err error) {
+	err = t.db.CreateInBatches(list, 1000).Error
+	return
+}
+
+func (t *{{.LowerTableName}}Model) UpdateByWhere(where {{.UpperTableName}}, update {{.UpperTableName}}) (err error) {
+	err = t.db.Where(where).Updates(&update).Error
+	return
+}
+
+func (t *{{.LowerTableName}}Model) FindByPrimary({{.PrimaryParams}}) ({{.ListName}} []{{.UpperTableName}}, err error) {
+	err = t.db.Where({{.PrimaryWhere}}).Find(&{{.ListName}}).Error
+	return
+}
+
+func (t *{{.LowerTableName}}Model) DeleteByPrimary({{.PrimaryParams}}) (err error) {
+	err = t.db.Where({{.PrimaryWhere}}).Delete(&{{.UpperTableName}}{}).Error
+	return
+}

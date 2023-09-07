@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/astaxie/beego v1.12.3
 	github.com/swaggo/swag v1.16.2
+	gorm.io/gorm v1.25.4
 )
 
 require (
@@ -19,6 +20,8 @@ require (
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect

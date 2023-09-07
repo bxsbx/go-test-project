@@ -2,7 +2,6 @@ package services
 
 import (
 	"StandardProject/models"
-	"StandardProject/types/db"
 	"context"
 	"strconv"
 )
@@ -19,9 +18,34 @@ func (c *testService) Test1() (string, error) {
 	return "vsasv", nil
 }
 
-func (c *testService) Test2() ([]db.Student, error) {
+func (c *testService) Test2(id int, name string) ([]models.Student, error) {
 	studentModel := models.NewStudentModel(c.appCtx)
-	return studentModel.FindAll()
+	//return studentModel.Find()
+	//where := models.Student{
+	//	Id:   id,
+	//	Name: name,
+	//}
+	//return studentModel.SelectFieldsFindByStudent(nil, where)
+	//studentModel.DeleteByPrimaryKeys(id, name)
+	//studentModel.Find()
+
+	//studentModel.UpdateByWhere(where, map[string]interface{}{
+	//	"class": "vwwvwv",
+	//	"Grade": "beebe",
+	//	"from":  23,
+	//})
+	//update := models.Student{
+	//	Class: "id",
+	//	Grade: sql.NullString{String: "name", Valid: true},
+	//	From:  23,
+	//}
+	//studentModel.UpdateByWhere(where, update)
+	var list []models.Student
+	list = append(list, models.Student{Name: "vasv", Class: "vwqwv", From: 3})
+	list = append(list, models.Student{Name: "vasv", Class: "vwqwv", From: 4})
+	list = append(list, models.Student{Name: "vasv", Class: "vwqwv", From: 44})
+	studentModel.BatchInsert(list)
+	return nil, nil
 }
 
 func (c *testService) Test3(id int) (string, error) {

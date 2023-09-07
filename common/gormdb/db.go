@@ -14,6 +14,7 @@ var dBMap = make(map[string]*gorm.DB)
 
 const (
 	DEFAULT = "default"
+	MY      = "my"
 )
 
 func newDB(cfg dBConfig) *gorm.DB {
@@ -37,11 +38,16 @@ func newDB(cfg dBConfig) *gorm.DB {
 }
 
 func InitDB(cfg beegoConfig.Configer) {
-	dBMap[DEFAULT] = newDB(defaultDBConfig(cfg))
+	//dBMap[DEFAULT] = newDB(defaultDBConfig(cfg))
+	dBMap[MY] = newDB(MyDBConfig())
 }
 
 func DefaultDB() *gorm.DB {
 	return dBMap[DEFAULT]
+}
+
+func MyDB() *gorm.DB {
+	return dBMap[MY]
 }
 
 func GetDB(key string) *gorm.DB {

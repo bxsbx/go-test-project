@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"regexp"
-	"strings"
 	"time"
 )
 
@@ -35,10 +33,8 @@ type T struct {
 //go:generate go run main.go
 //go:generate go version
 func main() {
-	left := strings.Trim("   Name  string  `form:\"name\" valid:\"Required\"` // 名称", " ")
-	//split := regexp.MustCompile("\\s+").Split(left, -1)
-	//fmt.Println(split)
-	//var bytes []byte
-	find := regexp.MustCompile("`.*`").FindString(left)
-	fmt.Println(find)
+	s := "s"
+	fmt.Println(s[:1])
+	fmt.Println(s[1:])
+
 }

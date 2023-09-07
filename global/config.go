@@ -1,6 +1,7 @@
 package global
 
 import (
+	"StandardProject/common/gormdb"
 	"StandardProject/common/redis"
 	"github.com/astaxie/beego/config"
 	"log"
@@ -15,7 +16,7 @@ func init() {
 	}
 	//logz.LogConfig(cfg)
 	//tracer.Config(cfg)
-	//gormdb.InitDB(cfg)
+	gormdb.InitDB(cfg)
 	redis.InitRedis(cfg)
 	//mongodb.InitMongoDB(cfg)
 	//mq.InitMq(cfg)

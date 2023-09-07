@@ -18,7 +18,12 @@ func (c *TestController) Test1() {
 		return
 	}
 	testService := services.NewTestService(c.AppCtx)
-	test1, err := testService.Test3(params.Id)
+	//test1, err := testService.Test3(params.Id)
+	//if err != nil {
+	//	c.OutputError(err)
+	//	return
+	//}
+	test1, err := testService.Test2(params.Id, params.Name)
 	if err != nil {
 		c.OutputError(err)
 		return

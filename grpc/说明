@@ -1,0 +1,7 @@
+go install google.golang.org/grpc
+go install google.golang.org/protobuf
+1.下载protoc文件，解压获取exe
+2.go get google.golang.org/grpc/cmd/protoc-gen-go
+  go get google.golang.org/grpc/cmd/protoc-gen-go-grpc
+3.如果没见有相应的exe，去到文件目录下执行go install
+

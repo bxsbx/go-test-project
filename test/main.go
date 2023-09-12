@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -30,11 +31,24 @@ type T struct {
 	Num         *int       `json:"num"`
 }
 
+func GetFileTypeByMimetype(mimeType string, ext ...string) (mimeType2 int) {
+	mimeType = strings.ToLower(mimeType)
+	if len(ext) <= 0 {
+		if strings.Contains(mimeType, "sheet") || strings.Contains(mimeType, "excel") {
+			fmt.Println(mimeType)
+		}
+	} else {
+		//extstr := strings.ToLower(ext[0])
+		if strings.Contains(mimeType, "excel") {
+			fmt.Println(mimeType)
+		}
+	}
+	return
+}
+
 //go:generate go run main.go
 //go:generate go version
 func main() {
-	s := "s"
-	fmt.Println(s[:1])
-	fmt.Println(s[1:])
+	GetFileTypeByMimetype("application/vnd.ms-excel", "xls")
 
 }

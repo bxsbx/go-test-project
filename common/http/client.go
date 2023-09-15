@@ -25,7 +25,7 @@ var client map[string]*Client
 
 func init() {
 	client = make(map[string]*Client)
-	client[DEFAULT] = &Client{RespType: 1, Client: newClient(3)}
+	client[DEFAULT] = &Client{RespType: 0, Client: newClient(3)}
 	client[HOMEWORK] = &Client{RespType: 2, Client: newClient(1)}
 }
 

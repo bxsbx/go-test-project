@@ -24,7 +24,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	StudentService_GetStudentByStuNumber_FullMethodName = "/pd.StudentService/GetStudentByStuNumber"
+	StudentService_GetStudentByStuNumber_FullMethodName             = "/pd.StudentService/GetStudentByStuNumber"
+	StudentService_GetStudentByStuNumberClientStream_FullMethodName = "/pd.StudentService/GetStudentByStuNumberClientStream"
+	StudentService_GetStudentByStuNumberServerStream_FullMethodName = "/pd.StudentService/GetStudentByStuNumberServerStream"
+	StudentService_GetStudentByStuNumberStockStream_FullMethodName  = "/pd.StudentService/GetStudentByStuNumberStockStream"
 )
 
 // StudentServiceClient is the client API for StudentService service.
@@ -32,6 +35,9 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StudentServiceClient interface {
 	GetStudentByStuNumber(ctx context.Context, in *StudentRequest, opts ...grpc.CallOption) (*StudentResponse, error)
+	GetStudentByStuNumberClientStream(ctx context.Context, opts ...grpc.CallOption) (StudentService_GetStudentByStuNumberClientStreamClient, error)
+	GetStudentByStuNumberServerStream(ctx context.Context, in *StudentRequest, opts ...grpc.CallOption) (StudentService_GetStudentByStuNumberServerStreamClient, error)
+	GetStudentByStuNumberStockStream(ctx context.Context, opts ...grpc.CallOption) (StudentService_GetStudentByStuNumberStockStreamClient, error)
 }
 
 type studentServiceClient struct {
@@ -51,11 +57,111 @@ func (c *studentServiceClient) GetStudentByStuNumber(ctx context.Context, in *St
 	return out, nil
 }
 
+func (c *studentServiceClient) GetStudentByStuNumberClientStream(ctx context.Context, opts ...grpc.CallOption) (StudentService_GetStudentByStuNumberClientStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &StudentService_ServiceDesc.Streams[0], StudentService_GetStudentByStuNumberClientStream_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &studentServiceGetStudentByStuNumberClientStreamClient{stream}
+	return x, nil
+}
+
+type StudentService_GetStudentByStuNumberClientStreamClient interface {
+	Send(*StudentRequest) error
+	CloseAndRecv() (*StudentResponse, error)
+	grpc.ClientStream
+}
+
+type studentServiceGetStudentByStuNumberClientStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *studentServiceGetStudentByStuNumberClientStreamClient) Send(m *StudentRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *studentServiceGetStudentByStuNumberClientStreamClient) CloseAndRecv() (*StudentResponse, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(StudentResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *studentServiceClient) GetStudentByStuNumberServerStream(ctx context.Context, in *StudentRequest, opts ...grpc.CallOption) (StudentService_GetStudentByStuNumberServerStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &StudentService_ServiceDesc.Streams[1], StudentService_GetStudentByStuNumberServerStream_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &studentServiceGetStudentByStuNumberServerStreamClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type StudentService_GetStudentByStuNumberServerStreamClient interface {
+	Recv() (*StudentResponse, error)
+	grpc.ClientStream
+}
+
+type studentServiceGetStudentByStuNumberServerStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *studentServiceGetStudentByStuNumberServerStreamClient) Recv() (*StudentResponse, error) {
+	m := new(StudentResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *studentServiceClient) GetStudentByStuNumberStockStream(ctx context.Context, opts ...grpc.CallOption) (StudentService_GetStudentByStuNumberStockStreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &StudentService_ServiceDesc.Streams[2], StudentService_GetStudentByStuNumberStockStream_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &studentServiceGetStudentByStuNumberStockStreamClient{stream}
+	return x, nil
+}
+
+type StudentService_GetStudentByStuNumberStockStreamClient interface {
+	Send(*StudentRequest) error
+	Recv() (*StudentResponse, error)
+	grpc.ClientStream
+}
+
+type studentServiceGetStudentByStuNumberStockStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *studentServiceGetStudentByStuNumberStockStreamClient) Send(m *StudentRequest) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *studentServiceGetStudentByStuNumberStockStreamClient) Recv() (*StudentResponse, error) {
+	m := new(StudentResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // StudentServiceServer is the server API for StudentService service.
 // All implementations must embed UnimplementedStudentServiceServer
 // for forward compatibility
 type StudentServiceServer interface {
 	GetStudentByStuNumber(context.Context, *StudentRequest) (*StudentResponse, error)
+	GetStudentByStuNumberClientStream(StudentService_GetStudentByStuNumberClientStreamServer) error
+	GetStudentByStuNumberServerStream(*StudentRequest, StudentService_GetStudentByStuNumberServerStreamServer) error
+	GetStudentByStuNumberStockStream(StudentService_GetStudentByStuNumberStockStreamServer) error
 	mustEmbedUnimplementedStudentServiceServer()
 }
 
@@ -65,6 +171,15 @@ type UnimplementedStudentServiceServer struct {
 
 func (UnimplementedStudentServiceServer) GetStudentByStuNumber(context.Context, *StudentRequest) (*StudentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStudentByStuNumber not implemented")
+}
+func (UnimplementedStudentServiceServer) GetStudentByStuNumberClientStream(StudentService_GetStudentByStuNumberClientStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetStudentByStuNumberClientStream not implemented")
+}
+func (UnimplementedStudentServiceServer) GetStudentByStuNumberServerStream(*StudentRequest, StudentService_GetStudentByStuNumberServerStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetStudentByStuNumberServerStream not implemented")
+}
+func (UnimplementedStudentServiceServer) GetStudentByStuNumberStockStream(StudentService_GetStudentByStuNumberStockStreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetStudentByStuNumberStockStream not implemented")
 }
 func (UnimplementedStudentServiceServer) mustEmbedUnimplementedStudentServiceServer() {}
 
@@ -97,6 +212,79 @@ func _StudentService_GetStudentByStuNumber_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StudentService_GetStudentByStuNumberClientStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(StudentServiceServer).GetStudentByStuNumberClientStream(&studentServiceGetStudentByStuNumberClientStreamServer{stream})
+}
+
+type StudentService_GetStudentByStuNumberClientStreamServer interface {
+	SendAndClose(*StudentResponse) error
+	Recv() (*StudentRequest, error)
+	grpc.ServerStream
+}
+
+type studentServiceGetStudentByStuNumberClientStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *studentServiceGetStudentByStuNumberClientStreamServer) SendAndClose(m *StudentResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *studentServiceGetStudentByStuNumberClientStreamServer) Recv() (*StudentRequest, error) {
+	m := new(StudentRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _StudentService_GetStudentByStuNumberServerStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(StudentRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(StudentServiceServer).GetStudentByStuNumberServerStream(m, &studentServiceGetStudentByStuNumberServerStreamServer{stream})
+}
+
+type StudentService_GetStudentByStuNumberServerStreamServer interface {
+	Send(*StudentResponse) error
+	grpc.ServerStream
+}
+
+type studentServiceGetStudentByStuNumberServerStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *studentServiceGetStudentByStuNumberServerStreamServer) Send(m *StudentResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _StudentService_GetStudentByStuNumberStockStream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(StudentServiceServer).GetStudentByStuNumberStockStream(&studentServiceGetStudentByStuNumberStockStreamServer{stream})
+}
+
+type StudentService_GetStudentByStuNumberStockStreamServer interface {
+	Send(*StudentResponse) error
+	Recv() (*StudentRequest, error)
+	grpc.ServerStream
+}
+
+type studentServiceGetStudentByStuNumberStockStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *studentServiceGetStudentByStuNumberStockStreamServer) Send(m *StudentResponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *studentServiceGetStudentByStuNumberStockStreamServer) Recv() (*StudentRequest, error) {
+	m := new(StudentRequest)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // StudentService_ServiceDesc is the grpc.ServiceDesc for StudentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -109,6 +297,23 @@ var StudentService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _StudentService_GetStudentByStuNumber_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetStudentByStuNumberClientStream",
+			Handler:       _StudentService_GetStudentByStuNumberClientStream_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "GetStudentByStuNumberServerStream",
+			Handler:       _StudentService_GetStudentByStuNumberServerStream_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "GetStudentByStuNumberStockStream",
+			Handler:       _StudentService_GetStudentByStuNumberStockStream_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "proto/student.proto",
 }

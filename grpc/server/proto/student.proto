@@ -22,6 +22,9 @@ message StudentResponse{
 
 //定义一个服务,根据学生的学号查询学生的信息
 service StudentService{
-  rpc GetStudentByStuNumber(StudentRequest) returns(StudentResponse){}
+  rpc GetStudentByStuNumber(StudentRequest) returns(StudentResponse);
+  rpc GetStudentByStuNumberClientStream(stream  StudentRequest) returns(StudentResponse);
+  rpc GetStudentByStuNumberServerStream(StudentRequest) returns(stream StudentResponse);
+  rpc GetStudentByStuNumberStockStream(stream  StudentRequest) returns(stream StudentResponse);
 }
 

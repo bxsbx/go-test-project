@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"strings"
 	"time"
 )
@@ -49,6 +51,14 @@ func GetFileTypeByMimetype(mimeType string, ext ...string) (mimeType2 int) {
 //go:generate go run main.go
 //go:generate go version
 func main() {
-	GetFileTypeByMimetype("application/vnd.ms-excel", "xls")
-
+	form := make(map[string]interface{})
+	form["csa"] = 1212
+	form["fwfw"] = T{}
+	marshal, err := json.Marshal(form)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var formData map[string]string
+	json.Unmarshal(marshal, &formData)
+	fmt.Println(formData)
 }

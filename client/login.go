@@ -13,6 +13,6 @@ func AuthToken(accessToken string, thisType, userType, userId string) error {
 	queryMap["userType"] = userType
 	queryMap["userId"] = userId
 
-	err := http.PostQuery(path, queryMap, nil, http.RESPONSE2, http.GetClient(http.LOGIN), context.Background())
+	err := http.DefaultClient().Post(path, queryMap, nil, nil, context.Background())
 	return err
 }

@@ -21,18 +21,18 @@ func newClient(timeOut int) *http.Client {
 	}
 }
 
-var client map[string]*http.Client
+var client map[string]*Client
 
 func init() {
-	client = make(map[string]*http.Client)
-	client[DEFAULT] = newClient(3)
-	client[HOMEWORK] = newClient(1)
+	client = make(map[string]*Client)
+	client[DEFAULT] = &Client{RespType: 1, Client: newClient(3)}
+	client[HOMEWORK] = &Client{RespType: 2, Client: newClient(1)}
 }
 
-func DefaultClient() *http.Client {
+func DefaultClient() *Client {
 	return client[DEFAULT]
 }
 
-func GetClient(clientKey string) *http.Client {
+func GetClient(clientKey string) *Client {
 	return client[clientKey]
 }

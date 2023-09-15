@@ -10,6 +10,9 @@ import (
 
 //go:generate protoc --go-grpc_out=. --go_out=. ./proto/student.proto
 func main() {
+	//creds, _ := credentials.NewServerTLSFromFile("", "")
+	//server := grpc.NewServer(grpc.Creds(creds))
+
 	server := grpc.NewServer()
 	studentService := service.StudentService{}
 

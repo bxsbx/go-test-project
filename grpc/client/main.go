@@ -12,6 +12,8 @@ import (
 //go:generate protoc --go-grpc_out=./ --go_out=./ ./proto/student.proto
 
 func main() {
+	//creds, _ := credentials.NewServerTLSFromFile("", "")
+	//conn, err := grpc.Dial(":8000", grpc.WithTransportCredentials(creds))
 	//无认证 grpc http 2 https
 	conn, err := grpc.Dial(":8000", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {

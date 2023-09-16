@@ -1,0 +1,22 @@
+// 文件位置：pbfile/studnet.proto
+// 指定使用的语法格式，根据自己下载的protoc的版本选择
+syntax = "proto3";
+// 指定代码生成在哪个位置
+option go_package = "./pd";
+// 指定包名
+package pd;
+
+message User{
+  string name = 1;
+  int32 age = 2;
+}
+// 定义请求体结构
+message UserRequest{
+  int32 number = 1; //请求中传入学生的学号，1表示占位符
+}
+
+//定义一个服务,根据学生的学号查询学生的信息
+service UserService{
+  rpc GetUser(UserRequest) returns(User);
+}
+

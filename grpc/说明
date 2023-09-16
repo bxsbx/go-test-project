@@ -5,3 +5,5 @@ go install google.golang.org/protobuf
   go get google.golang.org/grpc/cmd/protoc-gen-go-grpc
 3.如果没见有相应的exe，去到文件目录下执行go install
 
+import any
+include 文件夹需要放到bin所在的目录下

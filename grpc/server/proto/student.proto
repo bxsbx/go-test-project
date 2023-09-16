@@ -6,6 +6,11 @@ option go_package = "./pd";
 // 指定包名
 package pd;
 
+//命令执行的当前路径
+import "proto/user.proto";
+
+import "google/protobuf/any.proto";
+
 message Student{
   string name = 1;
   int32 age = 2;
@@ -18,6 +23,8 @@ message StudentRequest{
 // 定义响应体结构
 message StudentResponse{
   Student student = 1;
+  User user = 2;
+  google.protobuf.Any data = 3;
 }
 
 //定义一个服务,根据学生的学号查询学生的信息

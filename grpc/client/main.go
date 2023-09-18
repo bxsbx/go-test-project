@@ -1,6 +1,7 @@
 package main
 
 import (
+	"StandardProject/grpc/client/auth"
 	"StandardProject/grpc/client/pd"
 	"context"
 	"fmt"
@@ -16,7 +17,9 @@ func main() {
 	//creds, _ := credentials.NewServerTLSFromFile("", "")
 	//conn, err := grpc.Dial(":8000", grpc.WithTransportCredentials(creds))
 	//无认证 grpc http 2 https
-	conn, err := grpc.Dial(":8000", grpc.WithTransportCredentials(insecure.NewCredentials()))
+
+	token := &auth.Authentication{User: "admin", Password: "admin"}
+	conn, err := grpc.Dial(":8000", grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithPerRPCCredentials(token))
 	if err != nil {
 		log.Fatal("连接服务端失败", err)
 	}
@@ -24,13 +27,13 @@ func main() {
 	client := pd.NewStudentServiceClient(conn)
 
 	//单独调用
-	//GetStudentByStuNumber(client)
+	GetStudentByStuNumber(client)
 	//客户端流
 	//GetStudentByStuNumberClientStream(client)
 	//服务端流
 	//GetStudentByStuNumberServerStream(client)
 	//双向流
-	GetStudentByStuNumberStockStream(client)
+	//GetStudentByStuNumberStockStream(client)
 
 }
 

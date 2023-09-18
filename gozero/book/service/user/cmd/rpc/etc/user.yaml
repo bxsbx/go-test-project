@@ -1,0 +1,12 @@
+Name: user.rpc
+ListenOn: 127.0.0.1:8080
+#Etcd:
+#  Hosts:
+#  - 127.0.0.1:2379
+#  Key: user.rpc
+Mysql:
+  DataSource: root:123456@tcp(127.0.0.1:3306)/test?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: 172.16.1.23:6379
+    Pass: "123456"
+    Type: node

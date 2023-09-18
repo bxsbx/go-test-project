@@ -1,10 +1,10 @@
 package routers
 
 import (
+	"StandardProject/beego/routers/auth"
+	children2 "StandardProject/beego/routers/children"
+	"StandardProject/beego/types/response"
 	"StandardProject/common/errorz"
-	"StandardProject/routers/auth"
-	"StandardProject/routers/children"
-	"StandardProject/types/response"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/plugins/cors"
@@ -39,8 +39,8 @@ func init() {
 		}
 	})
 
-	children.Teacher()
-	children.Student()
-	children.Server()
-	children.Other()
+	children2.Teacher()
+	children2.Student()
+	children2.Server()
+	children2.Other()
 }

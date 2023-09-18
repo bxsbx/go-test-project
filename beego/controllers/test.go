@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"StandardProject/global"
-	"StandardProject/services"
-	"StandardProject/types/request"
+	"StandardProject/beego/global"
+	"StandardProject/beego/services"
+	"StandardProject/beego/types/request"
 )
 
 type TestController struct {

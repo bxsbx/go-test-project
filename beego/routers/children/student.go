@@ -1,8 +1,8 @@
 package children
 
 import (
-	"StandardProject/controllers"
-	"StandardProject/routers/auth"
+	"StandardProject/beego/controllers"
+	"StandardProject/beego/routers/auth"
 	"github.com/astaxie/beego"
 )
 

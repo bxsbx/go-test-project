@@ -1,7 +1,7 @@
 package services
 
 import (
-	"StandardProject/models"
+	"StandardProject/beego/models"
 	"context"
 	"database/sql"
 	"strconv"

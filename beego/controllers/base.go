@@ -1,11 +1,11 @@
 package controllers
 
 import (
+	"StandardProject/beego/global"
+	"StandardProject/beego/types/response"
 	"StandardProject/common/errorz"
 	"StandardProject/common/logz"
 	"StandardProject/common/tracer"
-	"StandardProject/global"
-	"StandardProject/types/response"
 	"context"
 	"encoding/json"
 	"github.com/astaxie/beego"

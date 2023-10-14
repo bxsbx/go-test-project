@@ -16,7 +16,7 @@ func main() {
 
 	routers := router.Routers()
 	server := &http.Server{
-		Addr:           "",
+		Addr:           ":8999",
 		Handler:        routers,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,

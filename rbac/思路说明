@@ -1,0 +1,62 @@
+采用经典的五表结构：
+用户表——user
+用户角色表——user_role
+角色表——role
+角色权限表——role_permissions
+权限表——permissions
+
+user表结构
+type User struct {
+    UserId   string
+    UserName string
+    Password string
+    Email    string
+    Phone    string
+    Gender   int
+}
+
+user_role表结构
+type UserRole struct {
+    UserId   string
+    RoleId   string
+}
+
+role表结构
+type Role struct {
+    RoleId   string
+    RoleName string
+    ParentId string //父角色
+    Level    int    //层级，0开始
+}
+
+role_permissions表结构
+type RolePermissions struct {
+    RoleId        string
+    PermissionsId string
+}
+
+permissions
+type Permissions struct {
+    PermissionsId   string
+    PermissionsName string
+    ParentId        string
+    Level           int    //层级，0开始
+    IsInherit       int    //权限是否允许父角色继承
+    Url             string //可以是具体的url，也可以是模糊的匹配的url
+    Method          int    //-1:没有url,0:全部,1:get,2:post,3:put,4:delete
+    ServerName      string //所属服务，或者模块名称
+}
+
+思路说明：
+一、查询
+1、根据模块名+用户id获取从redis中获取权限url列表
+2、若获取不到，读数据库，先获取角色列表（遍历读取父角色下的角色，直至读取的数据为空），再根据角色列表获取权限列表（遍历父权限下的权限，直至读取的数据为空）
+3、根据权限列表获取可访问的url列表（从level=0顶层开始遍历，list遍历是否模糊匹配成功，匹配成功则过滤掉，没有则加入list中）
+4、将url列表缓存进入到redis中（K:模块名+用户id）
+
+二、增删改
+1、若是用户分配角色修改，则根据*+用户id删缓存
+2、若是角色表修改（增无影响，删改有影响），则根据*删缓存
+3、若是角色分配权限修改，传权限列表结构，则根据模块名+*删缓存
+4、若是权限表修改（增无影响，删改有影响），则根据模块名+*删缓存
+

@@ -1,9 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"log"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -51,14 +50,8 @@ func GetFileTypeByMimetype(mimeType string, ext ...string) (mimeType2 int) {
 //go:generate go run main.go
 //go:generate go version
 func main() {
-	form := make(map[string]interface{})
-	form["csa"] = 1212
-	form["fwfw"] = T{}
-	marshal, err := json.Marshal(form)
-	if err != nil {
-		log.Fatal(err)
-	}
-	var formData map[string]string
-	json.Unmarshal(marshal, &formData)
-	fmt.Println(formData)
+	a := "fewef"
+	fmt.Println(a[4:])
+	atoi, err := strconv.Atoi("08")
+	fmt.Println(err, atoi)
 }

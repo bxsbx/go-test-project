@@ -41,72 +41,72 @@ func WebSocket(c *gin.Context) {
 	WsConn.Lock()
 	WsConn.ConnMap[params.UserId] = conn
 	WsConn.Unlock()
-	//defer func() {
-	//	conn.Close() //返回前关闭
-	//	WsConn.Lock()
-	//	delete(WsConn.ConnMap, params.UserId)
-	//	WsConn.Unlock()
-	//}()
-	//for {
-	//	//读取数据
-	//	messageType, message, err := conn.ReadMessage()
-	//	if err != nil {
-	//		break
-	//	}
-	//	if len(message) <= 0 {
-	//		continue
-	//	}
-	//	//写入数据
-	//	err = conn.WriteMessage(messageType, []byte("233929"+string(message)))
-	//	if err != nil {
-	//		break
-	//	}
-	//}
-}
-
-// 不可有多个读
-func Read1(c *gin.Context) {
-	var params UserParams
-	if err := c.ShouldBind(&params); err != nil {
-		c.Error(err)
-		return
-	}
-	if conn, ok := WsConn.ConnMap[params.UserId]; ok {
-		//for {
+	defer func() {
+		conn.Close() //返回前关闭
+		WsConn.Lock()
+		delete(WsConn.ConnMap, params.UserId)
+		WsConn.Unlock()
+	}()
+	for {
+		//读取数据
 		messageType, message, err := conn.ReadMessage()
 		if err != nil {
-			c.Error(err)
+			break
 		}
-		err = conn.WriteMessage(messageType, []byte("read1"+string(message)))
+		if len(message) <= 0 {
+			continue
+		}
+		//写入数据
+		err = conn.WriteMessage(messageType, []byte("233929"+string(message)))
 		if err != nil {
-			c.Error(err)
+			break
 		}
-		//}
+	}
+}
 
-		//c.JSON(http.StatusOK, strconv.Itoa(messageType)+string(message))
-	}
-}
-func Read2(c *gin.Context) {
-	var params UserParams
-	if err := c.ShouldBind(&params); err != nil {
-		c.Error(err)
-		return
-	}
-	if conn, ok := WsConn.ConnMap[params.UserId]; ok {
-		//for {
-		fmt.Println("cascacs")
-		messageType, message, err := conn.ReadMessage()
-		if err != nil {
-			c.Error(err)
-		}
-		err = conn.WriteMessage(messageType, []byte("read2"+string(message)))
-		if err != nil {
-			c.Error(err)
-		}
-		//}
-		//c.JSON(http.StatusOK, strconv.Itoa(messageType)+string(message))
-	}
-}
+//// 不可有多个读
+//func Read1(c *gin.Context) {
+//	var params UserParams
+//	if err := c.ShouldBind(&params); err != nil {
+//		c.Error(err)
+//		return
+//	}
+//	if conn, ok := WsConn.ConnMap[params.UserId]; ok {
+//		//for {
+//		messageType, message, err := conn.ReadMessage()
+//		if err != nil {
+//			c.Error(err)
+//		}
+//		err = conn.WriteMessage(messageType, []byte("read1"+string(message)))
+//		if err != nil {
+//			c.Error(err)
+//		}
+//		//}
+//
+//		//c.JSON(http.StatusOK, strconv.Itoa(messageType)+string(message))
+//	}
+//}
+//
+//func Read2(c *gin.Context) {
+//	var params UserParams
+//	if err := c.ShouldBind(&params); err != nil {
+//		c.Error(err)
+//		return
+//	}
+//	if conn, ok := WsConn.ConnMap[params.UserId]; ok {
+//		//for {
+//		messageType, message, err := conn.ReadMessage()
+//		if err != nil {
+//			c.Error(err)
+//		}
+//		err = conn.WriteMessage(messageType, []byte("read2"+string(message)))
+//		if err != nil {
+//			c.Error(err)
+//		}
+//		//}
+//		//c.JSON(http.StatusOK, strconv.Itoa(messageType)+string(message))
+//	}
+//}
 
 func Send1(c *gin.Context) {
 	var params UserParams
@@ -141,15 +141,15 @@ func Send2(c *gin.Context) {
 	}
 }
 
-// 不能有多个读，否则会因为每个读的所在的代码不一样导致通信标志出错（估计是根据上下文代码做为读的标识）（建议只允许一个读），但可以有多个写
+// 不能同时有多个读等待，否则会因为一个读会影响另一个读的位置导致通信标志出错（读位置是共享的）（建议只允许一个读），但可以有多个写
 func main() {
 	WsConn.ConnMap = make(map[string]*websocket.Conn)
 	app := gin.Default()
 
 	app.GET("/websocket", WebSocket)
 
-	app.GET("/read1", Read1)
-	app.GET("/read2", Read2)
+	//app.GET("/read1", Read1)
+	//app.GET("/read2", Read2)
 	app.GET("/send1", Send1)
 	app.GET("/send2", Send2)
 

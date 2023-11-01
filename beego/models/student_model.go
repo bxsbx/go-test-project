@@ -81,3 +81,13 @@ func (t *studentModel) DeleteByPrimaryKeys(id int, name string) (err error) {
 	err = t.db.Where("id = ? and name = ?", id, name).Delete(&Student{}).Error
 	return
 }
+
+type GroupBy struct {
+	Name  string `gorm:"column:name"`
+	Count int    `gorm:"column:count"`
+}
+
+func (t *studentModel) GroupByName(name string) (list []GroupBy, err error) {
+	err = t.db.Select("name,count(*) as count").Table("student").Where("name = ?", name).Group("name").Find(&list).Error
+	return
+}

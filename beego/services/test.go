@@ -64,3 +64,8 @@ func (c *testService) Test3(id int) (string, error) {
 
 	return strconv.Itoa(id), nil
 }
+
+func (c *testService) Test4(name string) ([]models.GroupBy, error) {
+	studentModel := models.NewStudentModel(c.appCtx)
+	return studentModel.GroupByName(name)
+}

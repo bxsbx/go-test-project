@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -50,8 +49,8 @@ func GetFileTypeByMimetype(mimeType string, ext ...string) (mimeType2 int) {
 //go:generate go run main.go
 //go:generate go version
 func main() {
-	a := "fewef"
-	fmt.Println(a[4:])
-	atoi, err := strconv.Atoi("08")
-	fmt.Println(err, atoi)
+	var a interface{}
+	a = "vsav"
+	b := a.(string)
+	fmt.Println(b)
 }

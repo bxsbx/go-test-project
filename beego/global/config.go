@@ -10,7 +10,7 @@ import (
 // 全局配置初始化
 func init() {
 
-	cfg, err := config.NewConfig("ini", "conf/app.conf")
+	cfg, err := config.NewConfig("ini", "beego/conf/app.conf")
 	if err != nil {
 		log.Fatal(err)
 	}

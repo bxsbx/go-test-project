@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"StandardProject/client"
+	"StandardProject/beego/client"
 	"github.com/astaxie/beego/context"
 )
 
@@ -23,7 +23,8 @@ func authToken(ctx *context.Context, userType, userId string) {
 	if pass == nil || !pass.(bool) {
 		curUserType := ctx.Request.Header.Get("userType")
 		if curUserType == userType {
-			err := client.AuthToken("token", "1", userType, userId)
+			loginClient := client.NewLoginClient(nil)
+			err := loginClient.AuthToken("token", "1", userType, userId)
 			if err != nil {
 				ctx.Input.SetData(AUTH_ERR, err)
 				ctx.Input.SetData(AUTH, false)

@@ -23,7 +23,12 @@ func (c *TestController) Test1() {
 	//	c.OutputError(err)
 	//	return
 	//}
-	test1, err := testService.Test2(params.Id, params.Name)
+	//test1, err := testService.Test2(params.Id, params.Name)
+	//if err != nil {
+	//	c.OutputError(err)
+	//	return
+	//}
+	test1, err := testService.Test4(params.Name)
 	if err != nil {
 		c.OutputError(err)
 		return

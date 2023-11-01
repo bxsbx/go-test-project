@@ -1,12 +1,8 @@
 package routers
 
 import (
-	"StandardProject/beego/routers/auth"
 	children2 "StandardProject/beego/routers/children"
-	"StandardProject/beego/types/response"
-	"StandardProject/common/errorz"
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/plugins/cors"
 )
 
@@ -26,18 +22,18 @@ func init() {
 		AllowCredentials: true,
 	}))
 	// 判断登录是否成功
-	beego.InsertFilter("*", beego.BeforeExec, func(ctx *context.Context) {
-		pass := ctx.Input.GetData(auth.AUTH)
-		if pass != nil && !pass.(bool) {
-			errData := ctx.Input.GetData(auth.AUTH_ERR)
-			if errData != nil {
-				err := errData.(error)
-				code, msg := errorz.GlobalError(err)
-				resp := response.Response{Code: code, Msg: msg}
-				ctx.Output.JSON(resp, false, false)
-			}
-		}
-	})
+	//beego.InsertFilter("*", beego.BeforeExec, func(ctx *context.Context) {
+	//	pass := ctx.Input.GetData(auth.AUTH)
+	//	if pass != nil && !pass.(bool) {
+	//		errData := ctx.Input.GetData(auth.AUTH_ERR)
+	//		if errData != nil {
+	//			err := errData.(error)
+	//			code, msg := errorz.GlobalError(err)
+	//			resp := response.Response{Code: code, Msg: msg}
+	//			ctx.Output.JSON(resp, false, false)
+	//		}
+	//	}
+	//})
 
 	children2.Teacher()
 	children2.Student()

@@ -43,6 +43,12 @@ func (t *lockMap) GetLock(key string) *sync.Mutex {
 	return lock.mu
 }
 
+func (t *lockMap) DelLock(key string) {
+	t.Lock()
+	defer t.Unlock()
+	delete(t.muMap, key)
+}
+
 // 删除锁(避免产生的锁过多而占用内存)
 func (t *lockMap) DeleteExpiredLock() {
 	t.Lock()

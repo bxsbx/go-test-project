@@ -1,8 +1,12 @@
 package main
 
 import (
+	"StandardProject/common/redis"
 	"fmt"
+	"log"
+	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -49,8 +53,40 @@ func GetFileTypeByMimetype(mimeType string, ext ...string) (mimeType2 int) {
 //go:generate go run main.go
 //go:generate go version
 func main() {
-	var a interface{}
-	a = "vsav"
-	b := a.(string)
-	fmt.Println(b)
+	//globalLockMap := local.NewGlobalLockMap()
+	//
+	//funMap := globalLockMap.GetFunMap("a")
+	redis.InitRedis(nil)
+	a := 100
+	var wg sync.WaitGroup
+	for a > 0 {
+		wg.Add(1)
+		go func(b string, i string) {
+			defer wg.Done()
+			//funMap := local.GolaLL.GetFunMap("a")
+			//yes := funMap.SetKey(b)
+			//if yes {
+			//	defer funMap.DelKey(b)
+			//	time.Sleep(5 * time.Second)
+			//	fmt.Println(b + "---" + i)
+			//} else {
+			//	fmt.Println("获取" + b + "失败" + "" + i)
+			//}
+
+			ok, err := redis.DefaultRedisObj().SetNXTtl(b, "ok", 180)
+			if err != nil {
+				log.Fatal(err)
+			}
+			if ok {
+				defer redis.DefaultRedisObj().DelKey(b)
+				time.Sleep(5 * time.Second)
+				fmt.Println(b + "---" + i)
+			} else {
+				fmt.Println("获取" + b + "失败" + "" + i)
+			}
+		}(strconv.Itoa(a%2), strconv.Itoa(a))
+		a--
+	}
+	wg.Wait()
+
 }

@@ -21,6 +21,11 @@ func (t *baseMysql) Find(where interface{}, list interface{}, fields ...string) 
 	return
 }
 
+func (t *baseMysql) Count(where interface{}) (count int64, err error) {
+	err = t.db.Where(where).Count(&count).Error
+	return
+}
+
 func (t *baseMysql) FindWithPageOrder(where interface{}, list interface{}, page, limit int, order string, fields ...string) (err error) {
 	db := t.db
 	if len(fields) > 0 {

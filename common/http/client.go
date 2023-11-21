@@ -2,6 +2,7 @@ package http
 
 import (
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -22,6 +23,7 @@ func newClient(timeOut int) *http.Client {
 }
 
 var client map[string]*Client
+var mu sync.RWMutex
 
 func init() {
 	client = make(map[string]*Client)
@@ -34,5 +36,22 @@ func DefaultClient() *Client {
 }
 
 func GetClient(clientKey string) *Client {
-	return client[clientKey]
+	if v, ok := client[clientKey]; ok {
+		return v
+	}
+	return client[DEFAULT]
+}
+
+func GetOrCreateClientByPath(path string, timeOut int) *Client {
+	mu.RLock()
+	v, ok := client[path]
+	mu.RUnlock()
+	if ok {
+		return v
+	}
+	mu.Lock()
+	defer mu.Unlock()
+	client_new := &Client{RespType: 0, Client: newClient(timeOut)}
+	client[path] = client_new
+	return client_new
 }

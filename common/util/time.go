@@ -37,3 +37,10 @@ func GetYmdByTime(time time.Time) (year, month, day int) {
 	day = time.Day()
 	return
 }
+
+func GetTomorrowDate() *time.Time {
+	now := time.Now().In(timeLocal)
+	dateStr := now.AddDate(0, 0, 1).Format(YMD)
+	tomorrowDate, _ := time.Parse(YMD, dateStr)
+	return &tomorrowDate
+}

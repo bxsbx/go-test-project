@@ -55,3 +55,10 @@ func (t *studentModel) GroupByName(name string) (list []GroupBy, err error) {
 	err = t.db.Select("name,count(*) as count").Table("student").Where("name = ?", name).Group("name").Find(&list).Error
 	return
 }
+
+func (t *studentModel) Test(where Student) (list []Student, err error) {
+	err = t.db.Select("name").Table("student").Where(Student{
+		Grade: sql.NullString{},
+	}).Find(&list).Error
+	return
+}

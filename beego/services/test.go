@@ -16,6 +16,8 @@ func NewTestService(appCtx context.Context) *testService {
 }
 
 func (c *testService) Test1() (string, error) {
+	studentModel := models.NewStudentModel(c.appCtx)
+	studentModel.Test(models.Student{})
 	return "vsasv", nil
 }
 

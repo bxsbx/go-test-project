@@ -1,7 +1,7 @@
 package main
 
 import (
-	"StandardProject/common/dmgorm/gorm_v2"
+	"StandardProject/common/dmdb/dmgorm/gorm_v2"
 	"fmt"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

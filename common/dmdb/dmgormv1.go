@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "StandardProject/common/dmgorm/gorm_v1"
+	_ "StandardProject/common/dmdb/dmgorm/gorm_v1"
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"log"

@@ -12,7 +12,7 @@ import (
 	"time"
 	"unicode/utf8"
 
-	_ "dm" // 引入dm数据库驱动包
+	_ "dm"                   // 引入dm数据库驱动包
 	"github.com/jinzhu/gorm" // 引入gorm v1包
 )
 

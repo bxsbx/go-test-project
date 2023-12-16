@@ -20,7 +20,7 @@ func M(k string) {
 }
 
 func main() {
-	a := make([][]int, 2)
-	a[0] = make([]int, 0)
-	fmt.Println(a)
+	a := make(map[string]bool)
+	a["0"] = false
+	fmt.Println(a["0"])
 }

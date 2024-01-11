@@ -100,7 +100,7 @@ func recordeLog(path, method string, header, query, body interface{}, err error)
 }
 
 func (c *Client) Request(path string, method string, header map[string]string, query map[string]string, body io.Reader, resultData interface{}, appCtx context.Context) error {
-	if query != nil && len(query) > 0 {
+	if len(query) > 0 {
 		params := url.Values{}
 		for k, v := range query {
 			params.Set(k, v)
@@ -113,7 +113,7 @@ func (c *Client) Request(path string, method string, header map[string]string, q
 		return errorz.CodeError(errorz.NEW_REQUEST, err)
 	}
 
-	if header != nil && len(header) > 0 {
+	if len(header) > 0 {
 		for k, v := range header {
 			req.Header.Set(k, v)
 		}

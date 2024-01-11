@@ -70,9 +70,9 @@ func NewTracer() io.Closer {
 }
 
 // new a span 并保存再上下文内容上，以便获取
-func StarTracerSpan(appCtx context.Context, req *http.Request) {
+func StarTracerSpan(appCtx context.Context, req *http.Request) context.Context {
 	if !tracerCfg.IsOpenTracing {
-		return
+		return appCtx
 	}
 	tracer := opentracing.GlobalTracer()
 	opName := req.Host + req.URL.Path
@@ -89,6 +89,7 @@ func StarTracerSpan(appCtx context.Context, req *http.Request) {
 		span = tracer.StartSpan(opName, opentracing.ChildOf(spanContext))
 	}
 	appCtx = context.WithValue(appCtx, TRACERSPANKEY, span)
+	return appCtx
 }
 
 // 向span写入请求头信息

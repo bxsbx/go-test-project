@@ -7,7 +7,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	_ "StandardProject/swagger/docs"
+	_ "StandardProject/swagger/docs" //注意路径
 )
 
 //	@title			Swagger Example API

@@ -2,6 +2,7 @@ package services
 
 import (
 	"StandardProject/beego/models"
+	"StandardProject/common/gormdb"
 	"context"
 	"database/sql"
 	"strconv"
@@ -68,6 +69,9 @@ func (c *testService) Test3(id int) (string, error) {
 }
 
 func (c *testService) Test4(name string) ([]models.GroupBy, error) {
-	studentModel := models.NewStudentModel(c.appCtx)
-	return studentModel.GroupByName(name)
+	a := &models.Student{}
+	var b interface{}
+	b = a
+	err := gormdb.DefaultDB().Where("name = ?", name).Delete(b).Error
+	return nil, err
 }

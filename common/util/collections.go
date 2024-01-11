@@ -102,3 +102,17 @@ func GetValuesFromMap[K comparable, V any](aMap map[K]V) []V {
 	}
 	return list
 }
+
+// 根据某个值去重后的list
+func ListToDeduplicationList[T, V any, K comparable](list []T, f func(t T) (K, V)) []V {
+	temMap := make(map[K]V, 0)
+	for _, t := range list {
+		k, v := f(t)
+		temMap[k] = v
+	}
+	temList := make([]V, 0)
+	for _, v := range temMap {
+		temList = append(temList, v)
+	}
+	return temList
+}

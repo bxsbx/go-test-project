@@ -1,9 +1,8 @@
 package main
 
 import (
-	"StandardProject/common/util"
-	"errors"
 	"fmt"
+	"golang.org/x/sync/errgroup"
 	"time"
 )
 
@@ -42,21 +41,43 @@ func main() {
 	//}
 	//fmt.Println(mMap)
 
-	coroutines := util.NewCoroutines()
-	for i := 0; i < 5; i++ {
-		coroutines.Add(func() error {
+	//coroutines := util.NewCoroutines()
+	//for i := 0; i < 5; i++ {
+	//	coroutines.Add(func() error {
+	//
+	//		if i == 3 {
+	//			fmt.Println(i)
+	//			return errors.New("scscasc")
+	//		}
+	//		time.Sleep(3 * time.Second)
+	//		return nil
+	//	})
+	//}
+	//time.Sleep(3 * time.Second)
+	//err := coroutines.Wait()
+	//
+	//fmt.Println(err)
 
-			if i == 3 {
-				fmt.Println(i)
-				return errors.New("scscasc")
-			}
-			time.Sleep(3 * time.Second)
-			return nil
-		})
+	//group := util.NewWaitGroup(0)
+	//group.Add()
+	//go func() {
+	//	defer group.Done()
+	//	fmt.Println("sc")
+	//}()
+	//group.Wait()
+
+	var wg errgroup.Group
+	type ty struct {
+		A int
 	}
-	time.Sleep(3 * time.Second)
-	err := coroutines.Wait()
+	list := make([]ty, 100)
+	for i := 0; i < 100; i++ {
+		list[i].A = i
+	}
+	for i := range list {
+		go func(x int) {
 
-	fmt.Println(err)
-
+		}(i)
+	}
+	wg.Wait()
 }

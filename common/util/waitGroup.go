@@ -2,46 +2,61 @@ package util
 
 import "sync"
 
+type wait struct{}
+
 type WaitGroup struct {
-	mu         sync.Mutex
-	wg         sync.WaitGroup
-	chanNum    chan bool
-	maxLineNum int
-	err        error
+	sync.Mutex
+	wg      sync.WaitGroup
+	chanNum chan wait
+	err     error
 }
 
-func NewWaitGroup(maxLineNum int) *WaitGroup {
-	return &WaitGroup{
-		chanNum: make(chan bool, maxLineNum),
+// 0:表示不限制协程数
+func NewWaitGroup(maxNum int) *WaitGroup {
+	if maxNum > 0 {
+		return &WaitGroup{
+			chanNum: make(chan wait, maxNum),
+		}
 	}
+	return &WaitGroup{}
+}
+
+func (w *WaitGroup) Go(f func() error) {
+	w.Add()
+	go func() {
+		defer w.Done()
+		err := f()
+		if err != nil {
+			w.SetError(err)
+		}
+	}()
 }
 
 func (w *WaitGroup) Add() {
 	w.wg.Add(1)
-	w.chanNum <- true
+	if w.chanNum != nil {
+		w.chanNum <- wait{}
+	}
 }
 
 func (w *WaitGroup) Done() {
 	w.wg.Done()
-	<-w.chanNum
+	if w.chanNum != nil {
+		<-w.chanNum
+	}
 }
 
-func (w *WaitGroup) Wait() {
+func (w *WaitGroup) Wait() error {
 	w.wg.Wait()
-}
-
-func (w *WaitGroup) Lock() {
-	w.mu.Lock()
-}
-
-func (w *WaitGroup) Unlock() {
-	w.mu.Unlock()
+	return w.err
 }
 
 func (w *WaitGroup) SetError(err error) {
+	w.Lock()
 	w.err = err
+	w.Unlock()
 }
 
-func (w *WaitGroup) GetError() error {
-	return w.err
-}
+//func (w *WaitGroup) GetError() error {
+//	return w.err
+//}

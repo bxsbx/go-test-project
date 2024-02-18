@@ -3,6 +3,7 @@ package main
 import (
 	"StandardProject/common/local"
 	"fmt"
+	"github.com/google/uuid"
 	"strconv"
 )
 
@@ -19,8 +20,11 @@ func M(k string) {
 	}
 }
 
+type hu struct {
+	Str string
+}
+
 func main() {
-	a := make(map[string]bool)
-	a["0"] = false
-	fmt.Println(a["0"])
+	random, _ := uuid.NewRandom()
+	fmt.Println(random.String())
 }

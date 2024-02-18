@@ -5,6 +5,8 @@ import (
 	"context"
 	"database/sql"
 	"gorm.io/gorm"
+	"gorm.io/plugin/soft_delete"
+	"time"
 )
 
 const (
@@ -12,12 +14,13 @@ const (
 )
 
 type Student struct {
-	Id        int            `gorm:"column:id;primary_key;"`
-	Name      string         `gorm:"column:name;primary_key"`
-	Class     string         `gorm:"column:class"`
-	Grade     sql.NullString `gorm:"column:grade"`
-	From      int            `gorm:"column:from"`
-	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at"`
+	Id           int                   `gorm:"column:id;primary_key;"`
+	Name         string                `gorm:"column:name;primary_key"`
+	Class        string                `gorm:"column:class"`
+	Grade        sql.NullString        `gorm:"column:grade"`
+	From         int                   `gorm:"column:from"`
+	DeletedTime  *time.Time            `gorm:"column:deleted_time"`
+	DeletedAt112 soft_delete.DeletedAt `gorm:"column:deleted_at1;softDelete:milli,DeletedAtField:DeletedTime"`
 }
 
 func (Student) TableName() string {

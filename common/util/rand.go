@@ -5,6 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
+	"github.com/google/uuid"
 	"io"
 )
 
@@ -14,4 +15,9 @@ func Getuid() string {
 		return ""
 	}
 	return fmt.Sprintf("%x", md5.Sum([]byte(base64.URLEncoding.EncodeToString(b))))
+}
+
+func GetRandUUID() string {
+	random, _ := uuid.NewRandom()
+	return random.String()
 }

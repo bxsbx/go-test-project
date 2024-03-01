@@ -172,12 +172,12 @@ func (c *Client) PostForm(path string, form map[string]string, resultData interf
 	for k, v := range form {
 		bodyForm.Set(k, v)
 	}
-	return c.Request(path, GET, header, nil, strings.NewReader(bodyForm.Encode()), resultData, appCtx)
+	return c.Request(path, POST, header, nil, strings.NewReader(bodyForm.Encode()), resultData, appCtx)
 }
 
 func (c *Client) PostJson(path string, body interface{}, resultData interface{}, appCtx context.Context) error {
 	header := make(map[string]string)
 	header[CONTENT_TYPE] = BODY_JSON
 	marshal, _ := json.Marshal(body)
-	return c.Request(path, GET, header, nil, strings.NewReader(string(marshal)), resultData, appCtx)
+	return c.Request(path, POST, header, nil, strings.NewReader(string(marshal)), resultData, appCtx)
 }

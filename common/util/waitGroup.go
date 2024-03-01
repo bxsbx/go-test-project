@@ -1,14 +1,20 @@
 package util
 
-import "sync"
+import (
+	"context"
+	"fmt"
+	"sync"
+)
 
 type wait struct{}
 
 type WaitGroup struct {
 	sync.Mutex
-	wg      sync.WaitGroup
-	chanNum chan wait
-	err     error
+	wg         sync.WaitGroup
+	chanNum    chan wait
+	err        error
+	cancel     context.Context
+	cancelFunc context.CancelFunc
 }
 
 // 0:表示不限制协程数
@@ -21,6 +27,16 @@ func NewWaitGroup(maxNum int) *WaitGroup {
 	return &WaitGroup{}
 }
 
+// 0:表示不限制协程数
+func NewWaitGroupWithContext(ctx context.Context, maxNum int) *WaitGroup {
+	cancel, cancelFunc := context.WithCancel(ctx)
+	w := &WaitGroup{cancel: cancel, cancelFunc: cancelFunc}
+	if maxNum > 0 {
+		w.chanNum = make(chan wait, maxNum)
+	}
+	return w
+}
+
 func (w *WaitGroup) Go(f func() error) {
 	w.Add()
 	go func() {
@@ -28,6 +44,23 @@ func (w *WaitGroup) Go(f func() error) {
 		err := f()
 		if err != nil {
 			w.SetError(err)
+		}
+	}()
+}
+
+func (w *WaitGroup) GoCancel(f func() error) {
+	w.Add()
+	go func() {
+		defer w.Done()
+		select {
+		case <-w.cancel.Done():
+			fmt.Println("任务取消")
+		default:
+			err := f()
+			if err != nil {
+				w.SetError(err)
+				w.cancelFunc()
+			}
 		}
 	}()
 }

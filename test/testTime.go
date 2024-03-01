@@ -1,31 +1,20 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"log"
 	"time"
 )
 
-type JiBu struct {
-	A  int
-	Ok *time.Time `json:"ok"`
-}
+var timeLocal, _ = time.LoadLocation("Asia/Chongqing")
 
 func main() {
-	str := "{ \"A\":98,\"ok\":\"2022-10-15T20:00:00Z\"}"
-	item := JiBu{}
-	decoder := json.NewDecoder(bytes.NewReader([]byte(str)))
-	//err := json.Unmarshal([]byte(str), &item)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	if err := decoder.Decode(&item); err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(item)
+	t := time.Now().Unix()
+	d := time.Unix(t, 0).Format("2006-01-02 15:04:05")
+	tt, _ := time.Parse("2006-01-02 15:04:05", d)
 
-	marshal, _ := json.Marshal(item)
-	fmt.Println(string(marshal))
+	println("===========================")
+	println("当前时间戳:", t)
+	println("当前日期:", d)
+	println("从日期得到时间戳:", tt.Unix())
+	println("再次转化为日期:", time.Unix(tt.Unix(), 0).Format("2006-01-02 15:04:05"))
+	println("===========================")
 }

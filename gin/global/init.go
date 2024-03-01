@@ -2,12 +2,10 @@ package global
 
 import (
 	"StandardProject/common/zaplog"
-	"fmt"
+	"go.uber.org/zap"
+	"os"
 )
 
 func Init() {
-	err := zaplog.InitZap()
-	if err != nil {
-		fmt.Println("日志初始化失败，err:", err)
-	}
+	Logger = zaplog.InitZap(zap.InfoLevel,os.Stdout)
 }

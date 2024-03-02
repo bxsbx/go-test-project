@@ -5,6 +5,8 @@ import (
 	"StandardProject/common/gormdb"
 	"context"
 	"database/sql"
+	"gorm.io/gorm"
+	"math/rand"
 	"strconv"
 )
 
@@ -73,5 +75,28 @@ func (c *testService) Test4(name string) ([]models.GroupBy, error) {
 	var b interface{}
 	b = a
 	err := gormdb.DefaultDB().Where("name = ?", name).Delete(b).Error
+	return nil, err
+}
+
+func (c *testService) Test5(name string) ([]models.GroupBy, error) {
+	err := gormdb.DefaultDB().Transaction(func(tx *gorm.DB) error {
+		a := models.Student{}
+		err := tx.Where("name = ?", name).First(&a).Error
+		if err != nil && err != gorm.ErrRecordNotFound {
+			return err
+		}
+		if a.Id != 0 {
+			itoa := strconv.Itoa(rand.Intn(50))
+			err := tx.Table("student").Where("name = ?", name).
+				Update("class", "csko"+itoa).Error
+			if err != nil {
+				return err
+			}
+		} else {
+			a.Name = name
+			tx.Create(&a)
+		}
+		return nil
+	})
 	return nil, err
 }

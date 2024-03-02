@@ -53,7 +53,7 @@ func GetFileTypeByMimetype(mimeType string, ext ...string) (mimeType2 int) {
 //go:generate go run main.go
 //go:generate go version
 func main() {
-	//globalLockMap := local.NewGlobalLockMap()
+	//globalLockMap := lock.NewGlobalLockMap()
 	//
 	//funMap := globalLockMap.GetFunMap("a")
 	redis.InitRedis(nil)
@@ -63,7 +63,7 @@ func main() {
 		wg.Add(1)
 		go func(b string, i string) {
 			defer wg.Done()
-			//funMap := local.GolaLL.GetFunMap("a")
+			//funMap := lock.GolaLL.GetFunMap("a")
 			//yes := funMap.SetKey(b)
 			//if yes {
 			//	defer funMap.DelKey(b)

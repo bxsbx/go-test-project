@@ -33,6 +33,23 @@ func (c *TestController) Test1() {
 	//	c.OutputError(err)
 	//	return
 	//}
+	test1, err := testService.Test5(params.Name)
+	if err != nil {
+		c.OutputError(err)
+		return
+	}
+	//c.OutputSuccess(test1)
+	c.Output(global.OK, "vsvs", test1, nil)
+}
+
+func (c *TestController) Test2() {
+	var params request.Test1Params
+	err := c.FormValidate(&params)
+	if err != nil {
+		c.OutputError(err)
+		return
+	}
+	testService := services.NewTestService(c.AppCtx)
 	test1, err := testService.Test4(params.Name)
 	if err != nil {
 		c.OutputError(err)

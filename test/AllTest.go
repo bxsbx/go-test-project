@@ -1,14 +1,14 @@
 package main
 
 import (
-	"StandardProject/common/local"
+	"StandardProject/common/lock"
 	"fmt"
 	"github.com/google/uuid"
 	"strconv"
 )
 
 var Map = make(map[string]string)
-var lockMap = local.NewLockMap(5, 2)
+var lockMap = lock.NewLockMap(5, 2)
 
 func M(k string) {
 	for i := 0; i < 10; i++ {

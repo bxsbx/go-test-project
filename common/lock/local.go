@@ -1,16 +1,17 @@
-package local
+package lock
 
 import (
 	"sync"
 	"time"
 )
 
+// 阻塞锁，以下可能存在误删锁的情况，获取的锁不同导致的锁起不到作用，慎用（另外，通过定时任务删除锁不太合理【容易删除正在进行的锁】，占用cpu及内存）
 type lockMutex struct {
 	mu          *sync.Mutex
 	expiredTime time.Time
 }
 
-// 仅适用于单机，分布式锁可以用redis
+// 仅适用于单机，分布式锁可以用redis，(需要加上版本号,避免误删锁，比如一台服务宕机了，而锁过期了，这时候服务恢复就会删除新的锁)
 type lockMap struct {
 	cycleTime int // 秒 执行循环删除的时间
 	expired   int // 秒 过期时间

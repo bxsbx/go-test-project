@@ -41,7 +41,6 @@ func (c *testService) Test2(id int, name string) ([]models.Student, error) {
 	//	"from":  23,
 	//})
 	update := models.Student{
-		Class: "",
 		Grade: sql.NullString{String: "", Valid: true},
 		From:  0,
 	}
@@ -98,5 +97,11 @@ func (c *testService) Test5(name string) ([]models.GroupBy, error) {
 		}
 		return nil
 	})
+	return nil, err
+}
+
+func (c *testService) Test6(name string) ([]models.Class, error) {
+	var list []models.Class
+	err := gormdb.DefaultDB().Preload("Students").Find(&list).Error
 	return nil, err
 }

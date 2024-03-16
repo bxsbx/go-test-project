@@ -4,17 +4,25 @@ import (
 	"fmt"
 	"github.com/robfig/cron/v3"
 	"strconv"
+	"time"
 )
 
-func StartCron() {
+func Co() {
 	c := cron.New()
 	c.AddFunc("@every 1s", func() {
-		_, err := strconv.Atoi("2ew")
-		//fmt.Println(atoi)
+		atoi, err := strconv.Atoi("2ew")
+		fmt.Println(atoi)
 		if err != nil {
 			fmt.Println(err)
 		}
 		return
 	})
 	c.Start()
+	time.Sleep(2 * time.Second)
+
+}
+
+func StartCron() {
+	Co()
+	time.Sleep(2 * time.Second)
 }

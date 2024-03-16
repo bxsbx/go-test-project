@@ -50,7 +50,7 @@ func (c *TestController) Test2() {
 		return
 	}
 	testService := services.NewTestService(c.AppCtx)
-	test1, err := testService.Test4(params.Name)
+	test1, err := testService.Test6(params.Name)
 	if err != nil {
 		c.OutputError(err)
 		return

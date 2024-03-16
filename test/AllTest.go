@@ -1,30 +1,30 @@
 package main
 
 import (
-	"StandardProject/common/lock"
 	"fmt"
-	"github.com/google/uuid"
-	"strconv"
+	"net/http"
+	"os"
 )
 
-var Map = make(map[string]string)
-var lockMap = lock.NewLockMap(5, 2)
-
-func M(k string) {
-	for i := 0; i < 10; i++ {
-		lock := lockMap.GetLock(strconv.Itoa(i))
-		lock.Lock()
-		fmt.Println(k, i, lock)
-		Map[fmt.Sprintf("%v", lock)] = "lock"
-		lock.Unlock()
-	}
-}
-
-type hu struct {
-	Str string
-}
-
 func main() {
-	random, _ := uuid.NewRandom()
-	fmt.Println(random.String())
+	filePath := "C:\\Users\\WangYu\\Desktop\\新建文本文档.txt" // 替换为你的文件路径
+
+	file, err := os.Open(filePath)
+	if err != nil {
+		fmt.Println("打开文件时出错:", err)
+		return
+	}
+	defer file.Close()
+
+	// 读取文件内容的前 512 个字节，用于判断 MIME 类型
+	buffer := make([]byte, 2048)
+	_, err = file.Read(buffer)
+	if err != nil {
+		fmt.Println("读取文件内容时出错:", err)
+		return
+	}
+
+	// 获取文件的 MIME 类型
+	mimeType := http.DetectContentType(buffer)
+	fmt.Println("文件的 MIME 类型为:", mimeType)
 }

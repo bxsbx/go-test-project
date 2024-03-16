@@ -15,8 +15,8 @@ const (
 
 type Student struct {
 	Id           int                   `gorm:"column:id;primary_key;"`
-	Name         string                `gorm:"column:name;primary_key"`
-	Class        string                `gorm:"column:class"`
+	Name         string                `gorm:"column:name"`
+	ClassId      string                `gorm:"column:class_id"`
 	Grade        sql.NullString        `gorm:"column:grade"`
 	From         int                   `gorm:"column:from"`
 	DeletedTime  *time.Time            `gorm:"column:deleted_time"`

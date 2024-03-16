@@ -13,8 +13,9 @@ import (
 )
 
 type Client struct {
-	RespType int
-	Client   *http.Client
+	TimeoutReTryNum int
+	RespType        int
+	Client          *http.Client
 }
 
 type response1 struct {
@@ -123,7 +124,17 @@ func (c *Client) Request(path string, method string, header map[string]string, q
 	// 链路跟踪记录请求头信息
 	tracer.InjectTracerSpan(appCtx, req.Header)
 
-	resp, err := c.Client.Do(req)
+	// 超时重试机制
+	var resp *http.Response
+	for i := 0; i <= c.TimeoutReTryNum; i++ {
+		resp, err = c.Client.Do(req)
+		if err != nil {
+			if e, ok := err.(*url.Error); ok && e.Timeout() {
+				continue
+			}
+		}
+		break
+	}
 	if err != nil {
 		return errorz.CodeError(errorz.REQUEST_ERR, err)
 	}

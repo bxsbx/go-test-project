@@ -12,6 +12,7 @@ import (
 	"strings"
 )
 
+// 如果针对某个请求进行其他超时次数进行，请克隆一份Client
 type Client struct {
 	TimeoutReTryNum int
 	RespType        int

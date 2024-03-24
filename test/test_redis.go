@@ -2,7 +2,7 @@ package main
 
 import (
 	"StandardProject/common/redis"
-	_ "StandardProject/global"
+	//_ "StandardProject/global"
 	"fmt"
 )
 

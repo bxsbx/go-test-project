@@ -1,4 +1,4 @@
-package main
+package cryptoes
 
 import (
 	"bytes"
@@ -6,10 +6,15 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"fmt"
-	"net/url"
-	"path"
 )
+
+//非对称加密算法
+
+//非对称加密算法需要两个密钥，这两个密钥互不相同，但是相互匹配，一个称为公钥，另一个称为私钥。
+//使用其中的一个加密，则使用另一个进行解密。例如使用公钥加密，则需要使用私钥解密。
+
+//RSA算法的优点是安全性高，公钥可以公开，私钥必须保密，保证了数据的安全性；可用于数字签名、密钥协商等多种应用场景。
+//缺点是加密、解密速度较慢，密钥长度越长，加密、解密时间越长；密钥长度过短容易被暴力破解，密钥长度过长则会增加计算量和存储空间的开销。
 
 func RSAGenerateKey(bits int) (privateKeyStr, publicKeyStr string, err error) {
 	privateKey, err := rsa.GenerateKey(rand.Reader, bits)
@@ -60,7 +65,7 @@ func EncryptRsa(src []byte, privateKeyStr string) ([]byte, error) {
 }
 
 // 解密
-func Decrypt(src []byte, publicKeyStr string) ([]byte, error) {
+func DecryptRsa(src []byte, publicKeyStr string) ([]byte, error) {
 	block, _ := pem.Decode([]byte(publicKeyStr))
 	privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
 	if err != nil {
@@ -68,20 +73,4 @@ func Decrypt(src []byte, publicKeyStr string) ([]byte, error) {
 	}
 	return rsa.DecryptPKCS1v15(rand.Reader, privateKey, src)
 
-}
-
-func main() {
-	u, err := url.Parse("http://example.com/path/to/resource?param1=value1&param2=value2")
-	if err != nil {
-		fmt.Println("Error parsing URL:", err)
-		return
-	}
-
-	u.RawQuery = "" // 清空查询参数
-	u.Fragment = "" // 清空fragment
-
-	cleanPath := path.Clean(u.Path) // 清理路径
-	u.Path = cleanPath
-
-	fmt.Println("URL without parameters:", u.String())
 }

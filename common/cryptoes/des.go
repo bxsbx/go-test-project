@@ -11,8 +11,8 @@ import (
 //使用cipher.NewCBCEncrypter生成CBC模式块
 //使用模式块的CryptBlocks进行加密，由于可指向同一内存地址，我们仍使用同一变量，节省内存
 
-//des (ECB | CBC | CFB | OFB | CTR) 支持五种模式
-
+// des (ECB | CBC | CFB | OFB | CTR) 支持五种模式
+// key 的值为8位，否则报错
 // DES加密
 func EncryptDES(src, iv, key []byte) []byte {
 	block, _ := des.NewCipher(key)

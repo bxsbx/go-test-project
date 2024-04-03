@@ -53,3 +53,8 @@ func TestRSA(t *testing.T) {
 	}
 	fmt.Print("明文===", fmt.Sprintf("%s", crypt))
 }
+
+func TestMD5Salt(t *testing.T) {
+	salt := MD5Salt("123456", "3434343434bgrtbrtnrtnr")
+	fmt.Println(23, salt)
+}

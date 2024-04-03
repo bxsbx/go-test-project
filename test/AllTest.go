@@ -1,8 +1,8 @@
 package main
 
 import (
-	"StandardProject/common/cryptoes"
 	"fmt"
+	"sync"
 	"unicode/utf8"
 )
 
@@ -26,10 +26,20 @@ func desensitizeName(name string) string {
 	return desensitizedName
 }
 
-func main() {
-	originalName := "440983199901081219"
-	fmt.Println("Original name:", originalName)
+type Al struct {
+	sync.RWMutex
+	A int
+}
 
-	desensitizedName := cryptoes.DesensitizeIdentityCard(originalName)
-	fmt.Println("Desensitized name:", desensitizedName)
+// NVUZCk1HwYEovkhSQhDwonCFsIsGgRom
+func main() {
+	al := Al{A: 10}
+	al.RLock()
+	defer al.RUnlock()
+	fmt.Println(al.A)
+
+	al.Lock()
+	defer al.Unlock()
+	al.A = 100
+	fmt.Println(al.A)
 }

@@ -32,14 +32,27 @@ type Al struct {
 }
 
 // NVUZCk1HwYEovkhSQhDwonCFsIsGgRom
-func main() {
-	al := Al{A: 10}
-	al.RLock()
-	defer al.RUnlock()
-	fmt.Println(al.A)
+type rw[T int8 | int16] interface {
+	writer(t T)
+	reader() T
+}
 
-	al.Lock()
-	defer al.Unlock()
-	al.A = 100
-	fmt.Println(al.A)
+type Number struct {
+	buf int8
+}
+
+func (n *Number) writer(b int8) {
+	n.buf = b
+}
+
+func (n *Number) reader() int8 {
+	return n.buf
+}
+
+func main() {
+	sum := 0
+	for _, v := range "databaseName" {
+		sum += int(v)
+	}
+	fmt.Println(sum)
 }

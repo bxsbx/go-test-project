@@ -27,6 +27,6 @@ func main() {
 	sqlDB.SetConnMaxIdleTime(time.Duration(30) * time.Second)
 
 	var n int64
-	db.Table("TEST.CITY").Count(&n)
+	db.Table("Test.activity").Count(&n)
 	fmt.Println(n)
 }

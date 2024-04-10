@@ -1,1 +1,0 @@
-insert into student (name,class,grade) values ('23','cvsa','vsabbb')

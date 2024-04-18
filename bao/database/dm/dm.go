@@ -4,12 +4,12 @@ import (
 	"context"
 	"database/sql"
 	_ "dm"
-	"errors"
 	"fmt"
 	"github.com/golang-migrate/migrate/v4/database"
 	"github.com/hashicorp/go-multierror"
 	"go.uber.org/atomic"
 	"io"
+	"strings"
 )
 
 func init() {
@@ -21,8 +21,6 @@ var DefaultMigrationsTable = "schema_migrations"
 var (
 	ErrNilConfig = fmt.Errorf("no config")
 	ErrNoSchema  = fmt.Errorf("no schema")
-
-	errInvalidDSNNoSlash = errors.New("invalid DSN: missing the slash separating the database name")
 )
 
 type Config struct {
@@ -114,7 +112,7 @@ func (m *DM) Open(dns string) (database.Driver, error) {
 	if err != nil {
 		return nil, err
 	}
-	db, err := sql.Open("dm", fmt.Sprintf("dm://%s/%s@%s", cfg.User, cfg.Passwd, cfg.Addr))
+	db, err := sql.Open("dm", fmt.Sprintf("dm://%s:%s@%s", cfg.User, cfg.Passwd, cfg.Addr))
 	if err != nil {
 		return nil, err
 	}
@@ -187,10 +185,25 @@ func (m *DM) Run(migration io.Reader) error {
 	ctx := context.Background()
 
 	query := string(migr[:])
-	if _, err := m.conn.ExecContext(ctx, query); err != nil {
-		return database.Error{OrigErr: err, Err: "migration failed", Query: migr}
+	split := strings.Split(query, ";")
+	tx, err := m.conn.BeginTx(context.Background(), &sql.TxOptions{Isolation: sql.LevelSerializable})
+	if err != nil {
+		return &database.Error{OrigErr: err, Err: "transaction start failed"}
 	}
-
+	for _, v := range split {
+		trim := strings.TrimSpace(v)
+		if len(trim) > 0 {
+			if _, err := m.conn.ExecContext(ctx, v); err != nil {
+				if errRollback := tx.Rollback(); errRollback != nil {
+					err = multierror.Append(err, errRollback)
+				}
+				return &database.Error{OrigErr: err, Query: []byte(query)}
+			}
+		}
+	}
+	if err := tx.Commit(); err != nil {
+		return &database.Error{OrigErr: err, Err: "transaction commit failed"}
+	}
 	return nil
 }
 

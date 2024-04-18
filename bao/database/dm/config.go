@@ -39,6 +39,8 @@ func parseDSNParams(cfg *DMsqlConfig, params string) (err error) {
 			if err != nil {
 				return
 			}
+		case "schema":
+			cfg.SchemaName = value
 		default:
 			// lazy init
 			if cfg.Params == nil {

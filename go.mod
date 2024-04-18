@@ -3,6 +3,7 @@ module StandardProject
 go 1.20
 
 require (
+	dm v0.0.0-00010101000000-000000000000
 	github.com/astaxie/beego v1.12.3
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/docker/distribution v2.8.2+incompatible
@@ -148,3 +149,5 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
+
+replace dm => ./bao/dm

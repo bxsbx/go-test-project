@@ -1,0 +1,9 @@
+csascacprelog2024/02/23 cwqwfqwf
+09:29:45.179598 prelogcwqwfqwf
+2024/02/23 09:30:11.060573 GPT.go:36: prelogcwqwfqwf
+prelogcwqwfqwf
+prelogGPT.go:36: cwqwfqwf
+prelogH:/GoProject/StandardProject/test/GPT.go:36: cwqwfqwf
+{"level":"info","ts":1708684121.1296926,"msg":"This is an info log","header":"req.Header"}
+{"level":"warn","ts":1708684121.1296926,"msg":"This is a warning log","header":"req.Header"}
+{"level":"error","ts":1708684121.1296926,"msg":"This is an error log","header":"req.Header"}

@@ -1,9 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"StandardProject/common/zaplog"
+	"go.uber.org/zap"
 	"sync"
 	"unicode/utf8"
+
+	"github.com/natefinch/lumberjack"
 )
 
 // 脱敏姓名
@@ -50,9 +53,16 @@ func (n *Number) reader() int8 {
 }
 
 func main() {
-	sum := 0
-	for _, v := range "databaseName" {
-		sum += int(v)
+	logger := &lumberjack.Logger{
+		Filename:   "./logs/app.log", // 日志文件路径
+		MaxSize:    1,                // 每个日志文件的最大尺寸 (以 MB 为单位)
+		MaxBackups: 3,                // 保留的旧日志文件的最大数量
+		MaxAge:     28,               // 保留的旧日志文件的最大天数
+		Compress:   true,             // 是否压缩/归档旧日志文件
 	}
-	fmt.Println(sum)
+	zapLogger := zaplog.InitZap(zap.InfoLevel, logger)
+
+	for i := 0; i < 10000; i++ {
+		zapLogger.Info("csac", zap.String("1", "vqwwcsjiaaadwqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqaaaaaaaaaaaaaaaaaaiwevjwiehvwiehvowehvowhoeuvhowhevowheovhweooooooooooooooooooooooooooooooooooooowehooooooooovhuffffffffffdhu"))
+	}
 }
